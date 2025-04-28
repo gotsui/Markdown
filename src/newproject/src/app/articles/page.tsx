@@ -1,0 +1,37 @@
+import prisma from "@/lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "../api/auth/[...nextauth]/route";
+import ArticleCard from "@/components/ArticleCard";
+import React from "react";
+import { Prisma } from "@/generated/prisma";
+
+const ArticlesPage = async () => {
+    const session = await getServerSession(authOptions);
+
+    const whereClause: { OR: Prisma.ArticleWhereInput[] } = {
+        OR: [{ visibility: "PUBLIC" }],
+    };
+
+    if (session && session.user) {
+        whereClause.OR.push({ authorId: session.user.id });
+    }
+
+    const articles = await prisma.article.findMany({
+        where: whereClause,
+        orderBy: { createdAt: "desc" },
+    });
+
+    return (
+        <div className="container mx-auto p-4">
+            <h1 className="text-2xl font-bold mb-4">記事一覧</h1>
+            <div className="grid gap-4">
+                {articles.length === 0 && <p>記事がありません。</p>}
+                {articles.map((article: Article) => (
+                    <ArticleCard key={article.id} article={article} />
+                ))}
+            </div>
+        </div>
+    );
+};
+
+export default ArticlesPage;
