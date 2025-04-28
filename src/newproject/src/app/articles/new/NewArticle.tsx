@@ -97,7 +97,7 @@ const NewArticle: React.FC = () => {
             />
             <button
                 onClick={handleSubmit}
-                className="bg-violet-500 text-white p-2 rounded"
+                className="bg-blue-500 text-white rounded mt-4 px-4 py-2 hover:bg-blue-600"
             >
                 Save
             </button>

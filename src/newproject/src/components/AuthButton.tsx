@@ -13,7 +13,7 @@ const AuthButton: React.FC = () => {
     if (session && session.user) {
         return (
             <div className="flex items-center space-x-4">
-                <span className="text-gray-700">
+                <span className="text-white">
                     ようこそ、{session.user.name || session.user.email} さん！
                 </span>
                 <button
