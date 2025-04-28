@@ -1,10 +1,9 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import MarkdownEditor from "@/components/MarkdownEditor";
-import { readMarkdown, saveMarkdown } from "@/lib/markdown";
 import { useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
-import React, { useState, useEffect } from "react";
 
 type Props = {
     params: { slug: string };
@@ -15,6 +14,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     const router = useRouter();
     const [title, setTitle] = useState("");
     const [slug, setSlug] = useState(params.slug);
+    const [description, setDescription] = useState("");
     const [content, setContent] = useState("");
     const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE" | "DRAFT">("PUBLIC");
     const [loading, setLoading] = useState(true);
@@ -37,6 +37,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                 }
 
                 setTitle(article.title);
+                setDescription(article.description || "");
                 setVisibility(article.visibility);
 
                 // Markdownを取得
@@ -120,18 +121,27 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                 onChange={(e) => setSlug(e.target.value)}
                 className="w-full p-2 mb-4 border"
             />
+            <textarea
+                placeholder="Description"
+                value={description ? description : ""}
+                onChange={(e) => setDescription(e.target.value)}
+                className="w-full p-2 mb-4 border rounded"
+            />
             <select
                 value={visibility}
                 onChange={(e) => setVisibility(e.target.value as typeof visibility)}
                 className="w-full p-2 mb-4 border"
             >
-                <option value="PUBLIC">Public</option>
-                <option value="PRIVATE">Private</option>
-                <option value="DRAFT">Draft</option>
+                <option value="PUBLIC">公開</option>
+                <option value="PRIVATE">非公開</option>
+                <option value="DRAFT">下書き</option>
             </select>
             <MarkdownEditor value={content} onChange={setContent} />
-            <button onClick={handleSubmit} className="mt-4 p-2 bg-blue-500 text-white">
-                Update
+            <button
+                onClick={handleSubmit}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            >
+                更新
             </button>
         </div>
     );

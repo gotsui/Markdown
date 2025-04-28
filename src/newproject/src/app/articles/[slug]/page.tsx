@@ -7,6 +7,7 @@ import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
 import { Prisma } from "@/generated/prisma";
+import Link from "next/link";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -48,6 +49,16 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
             <p className="text-sm text-gray-500 mb-4">
                 作成者: {article.author.name || "匿名"} | 公開状態: {article.visibility}
             </p>
+            {session?.user && (session.user.id === article.authorId || session.user.role === "ADMIN") && (
+                <div className="mb-4">
+                    <Link
+                        href={`/articles/edit/${slug}`}
+                        className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                    >
+                        編集
+                    </Link>
+                </div>
+            )}
             <div className="prose max-w-none">
                 <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                     {content}

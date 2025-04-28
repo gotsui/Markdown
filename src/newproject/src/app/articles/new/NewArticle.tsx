@@ -99,7 +99,7 @@ const NewArticle: React.FC = () => {
                 onClick={handleSubmit}
                 className="bg-blue-500 text-white rounded mt-4 px-4 py-2 hover:bg-blue-600"
             >
-                Save
+                保存
             </button>
         </div>
     );

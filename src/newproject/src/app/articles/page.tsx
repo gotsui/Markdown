@@ -27,7 +27,7 @@ const ArticlesPage = async () => {
             <div className="grid gap-4">
                 {articles.length === 0 && <p>記事がありません。</p>}
                 {articles.map((article: Article) => (
-                    <ArticleCard key={article.id} article={article} />
+                    <ArticleCard key={article.id} article={article} session={session} />
                 ))}
             </div>
         </div>

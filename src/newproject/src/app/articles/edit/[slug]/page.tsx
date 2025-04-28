@@ -1,10 +1,8 @@
-"use client";
-
-import { redirect } from "next/navigation";
 import React from "react";
-import EditArticle from "./EditArticle";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { redirect } from "next/navigation";
+import EditArticle from "./EditArticle";
 
 type Props = {
     params: { slug: string };
@@ -17,8 +15,10 @@ const EditArticlePage: React.FC<Props> = async ({ params }) => {
         redirect("/api/auth/signin");
     }
 
+    const { slug } = await params;
+
     return (
-        <EditArticle params={params} />
+        <EditArticle params={{ slug }} />
     );
 };
 
