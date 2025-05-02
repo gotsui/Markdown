@@ -1,18 +1,17 @@
-import prisma from "@/lib/prisma";
-import { readMarkdown } from "@/lib/markdown";
 import { notFound } from "next/navigation";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import prisma from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
+import { isAuthorOrAdmin } from "@/lib/auth";
+import EditButton from "@/components/EditButton";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { Prisma } from "@prisma/client";
-import Link from "next/link";
-import Mermaid from "@/components/Mermaid";
+import { readMarkdown } from "@/lib/markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
-import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { isAuthorOrAdmin } from "@/lib/auth";
-import EditButton from "@/components/EditButton";
+import { vs2015 } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import Mermaid from "@/components/Mermaid";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -70,7 +69,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
 
                                 return match ? (
                                     <SyntaxHighlighter
-                                        style={vscDarkPlus as any}
+                                        style={vs2015 as any}
                                         language={match[1]}
                                         PreTag="div"
                                         {...props}
