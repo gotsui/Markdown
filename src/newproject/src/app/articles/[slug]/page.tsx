@@ -12,6 +12,7 @@ import { readMarkdown } from "@/lib/markdown";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs2015 } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import Mermaid from "@/components/Mermaid";
+import TableOfContents from "@/components/TableOfContents";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -53,6 +54,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
             <div className="mb-4">
                 <EditButton slug={slug} authorId={article.authorId} session={session} />
             </div>
+            <TableOfContents markdown={content} />
             <div className="prose max-w-none">
                 <Markdown
                     remarkPlugins={[remarkGfm]}
@@ -80,7 +82,19 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                                     <code className={className}>{children}</code>
                                 )
                             }
-                        }
+                        },
+                        h1({ node, children, ...props }) {
+                            const id = children?.toString() || "";
+                            return <h1 id={encodeURIComponent(id)} {...props}>{children}</h1>
+                        },
+                        h2({ node, children, ...props }) {
+                            const id = children?.toString() || "";
+                            return <h2 id={encodeURIComponent(id)} {...props}>{children}</h2>
+                        },
+                        h3({ node, children, ...props }) {
+                            const id = children?.toString() || "";
+                            return <h3 id={encodeURIComponent(id)} {...props}>{children}</h3>
+                        },
                     }}
                 >
                     {content}
