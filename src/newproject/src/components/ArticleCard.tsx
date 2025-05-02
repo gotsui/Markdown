@@ -1,6 +1,7 @@
 import { Session } from "next-auth";
 import Link from "next/link";
 import React from "react";
+import EditButton from "./EditButton";
 
 type ArticleCardProps = {
     article: {
@@ -26,16 +27,9 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, session }) => {
                 <p className="text-sm text-gray-500">Created: {new Date(article.createdAt).toLocaleDateString()}</p>
                 <p className="text-sm text-gray-500">Visibility: {article.visibility}</p>
             </div>
-            {session?.user && (session.user.id === article.authorId || session.user.role === "ADMIN") && (
-                <div className="flex items-end">
-                    <Link
-                        href={`/articles/edit/${article.slug}`}
-                        className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        編集
-                    </Link>
-                </div>
-            )}
+            <div className="flex items-end">
+                <EditButton slug={article.slug} authorId={article.authorId} session={session} />
+            </div>
         </div>
     );
 };

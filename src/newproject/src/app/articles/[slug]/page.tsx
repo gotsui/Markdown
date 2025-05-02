@@ -12,6 +12,7 @@ import Mermaid from "@/components/Mermaid";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { isAuthorOrAdmin } from "@/lib/auth";
+import EditButton from "@/components/EditButton";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -50,16 +51,9 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
             <p className="text-sm text-gray-500 mb-4">
                 作成者: {article.author.name || "匿名"} | 公開状態: {article.visibility}
             </p>
-            {session?.user && isAuthorOrAdmin(article.authorId, session) && (
-                <div className="mb-4">
-                    <Link
-                        href={`/articles/edit/${slug}`}
-                        className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-                    >
-                        編集
-                    </Link>
-                </div>
-            )}
+            <div className="mb-4">
+                <EditButton slug={slug} authorId={article.authorId} session={session} />
+            </div>
             <div className="prose max-w-none">
                 <Markdown
                     remarkPlugins={[remarkGfm]}
