@@ -99,7 +99,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                 throw new Error("Failed to save markdown");
             }
 
-            router.push(`articles/${slug}`);
+            router.push(`/articles/${slug}`);
         } catch (error) {
             console.error("Error updating article:", error);
         }

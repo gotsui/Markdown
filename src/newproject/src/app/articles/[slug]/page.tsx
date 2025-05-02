@@ -6,8 +6,11 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import rehypeRaw from "rehype-raw";
-import { Prisma } from "@/generated/prisma";
+import { Prisma } from "@prisma/client";
 import Link from "next/link";
+import Mermaid from "@/components/Mermaid";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -60,7 +63,35 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                 </div>
             )}
             <div className="prose max-w-none">
-                <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                <Markdown
+                    remarkPlugins={[remarkGfm]}
+                    rehypePlugins={[rehypeRaw]}
+                    components={{
+                        code({ node, className, children, ref, ...props }) {
+                            if (
+                                className === "language-mermaid" &&
+                                node?.children[0].type === "text"
+                            ) {
+                                return <Mermaid code={node?.children[0].value} />
+                            } else {
+                                const match = /language-(\w+)/.exec(className || "");
+
+                                return match ? (
+                                    <SyntaxHighlighter
+                                        style={vscDarkPlus as any}
+                                        language={match[1]}
+                                        PreTag="div"
+                                        {...props}
+                                    >
+                                        {String(children).replace(/\n$/, "")}
+                                    </SyntaxHighlighter>
+                                ) : (
+                                    <code className={className}>{children}</code>
+                                )
+                            }
+                        }
+                    }}
+                >
                     {content}
                 </Markdown>
             </div>

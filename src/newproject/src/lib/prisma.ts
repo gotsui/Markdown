@@ -1,5 +1,4 @@
-// import { PrismaClient } from '@prisma/client';
-import { PrismaClient } from '@/generated/prisma/index.js';
+import { PrismaClient } from '@prisma/client';
 
 declare global {
     var prisma: PrismaClient;

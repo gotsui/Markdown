@@ -2,8 +2,7 @@ import { getServerSession } from "next-auth";
 import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
-import { Prisma } from "@/generated/prisma";
-import { error } from "console";
+import { Prisma } from "@prisma/client";
 
 export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
@@ -92,7 +91,7 @@ export async function PUT(req: NextRequest) {
 
     try {
         const { originalSlug, title, slug, visibility } = await req.json();
-        const article: Article = await prisma.article.findUnique({ where: { slug: originalSlug }});
+        const article = await prisma.article.findUnique({ where: { slug: originalSlug }});
 
         if (!article || (article.authorId !== session.user.id && session.user.role !== "ADMIN")) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });

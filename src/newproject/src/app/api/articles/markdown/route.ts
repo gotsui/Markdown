@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 import { readMarkdown, saveMarkdown } from "@/lib/markdown";
-import { error } from "console";
 
 export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);

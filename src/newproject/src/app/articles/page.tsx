@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]/route";
 import ArticleCard from "@/components/ArticleCard";
 import React from "react";
-import { Prisma } from "@/generated/prisma";
+import { Prisma } from "@prisma/client";
 
 const ArticlesPage = async () => {
     const session = await getServerSession(authOptions);
