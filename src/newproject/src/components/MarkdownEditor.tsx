@@ -28,6 +28,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
                     onChange={handleChange}
                     placeholder="Markdownを入力してください"
                     className="w-full h-64 p-2 border rounded resize-y"
+                    spellCheck={false}
                 />
             </div>
             <div>

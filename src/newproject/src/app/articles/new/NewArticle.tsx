@@ -80,6 +80,7 @@ const NewArticle: React.FC = () => {
                 value={description ? description : ""}
                 onChange={(e) => setDescription(e.target.value)}
                 className="w-full p-2 mb-4 border rounded"
+                spellCheck={false}
             />
             <select
                 value={visibility}
