@@ -19,6 +19,7 @@ const ArticlesPage = async () => {
     const articles = await prisma.article.findMany({
         where: whereClause,
         orderBy: { createdAt: "desc" },
+        include: { author: true }
     });
 
     return (
@@ -26,7 +27,7 @@ const ArticlesPage = async () => {
             <h1 className="text-2xl font-bold mb-4">記事一覧</h1>
             <div className="grid gap-4">
                 {articles.length === 0 && <p>記事がありません。</p>}
-                {articles.map((article: Article) => (
+                {articles.map((article: any) => (
                     <ArticleCard key={article.id} article={article} session={session} />
                 ))}
             </div>
