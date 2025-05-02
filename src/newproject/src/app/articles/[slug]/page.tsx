@@ -11,6 +11,7 @@ import Link from "next/link";
 import Mermaid from "@/components/Mermaid";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { isAuthorOrAdmin } from "@/lib/auth";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -36,10 +37,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
         notFound();
     }
 
-    if (
-        article.visibility !== "PUBLIC" &&
-        (!session?.user || (session.user.id !== article.authorId && session.user.role !== "ADMIN"))
-    ) {
+    if (article.visibility !== "PUBLIC" && !isAuthorOrAdmin(article.authorId, session)) {
         notFound();
     }
 
@@ -52,7 +50,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
             <p className="text-sm text-gray-500 mb-4">
                 作成者: {article.author.name || "匿名"} | 公開状態: {article.visibility}
             </p>
-            {session?.user && (session.user.id === article.authorId || session.user.role === "ADMIN") && (
+            {session?.user && isAuthorOrAdmin(article.authorId, session) && (
                 <div className="mb-4">
                     <Link
                         href={`/articles/edit/${slug}`}

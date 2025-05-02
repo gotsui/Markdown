@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { authOptions } from "../../auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 import { readMarkdown, saveMarkdown } from "@/lib/markdown";
+import { isAuthorOrAdmin } from "@/lib/auth";
 
 export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
@@ -21,7 +22,11 @@ export async function GET(req: NextRequest) {
 
         const article = await prisma.article.findUnique({ where: { slug }});
 
-        if (!article || (article.authorId !== session.user.id && session.user.role !== "ADMIN")) {
+        if (!article) {
+            return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+        }
+
+        if (!isAuthorOrAdmin(article.authorId, session)) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
@@ -44,7 +49,11 @@ export async function POST(req: NextRequest) {
         const { slug, content } = await req.json();
         const article = await prisma.article.findUnique({ where: { slug }});
 
-        if (!article || (article.authorId !== session.user.id && session.user.role !== "ADMIN")) {
+        if (!article) {
+            return NextResponse.json({ error: 'Article not found' }, { status: 404 });
+        }
+
+        if (!isAuthorOrAdmin(article.authorId, session)) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 

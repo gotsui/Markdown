@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import MarkdownEditor from "@/components/MarkdownEditor";
 import { useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
+import { isAuthorOrAdmin } from "@/lib/auth";
 
 type Props = {
     params: { slug: string };
@@ -31,7 +32,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
 
                 const article: Article = await articleRes.json();
 
-                if (!article || (session?.user?.id !== article.authorId  && session?.user?.role !== "ADMIN")) {
+                if (!isAuthorOrAdmin(article.authorId, session)) {
                     router.push("/articles");
                     return;
                 }
