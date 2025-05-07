@@ -59,7 +59,7 @@ export async function POST(req: NextRequest) {
     try {
         const { title, slug, description, visibility, authorId } = await req.json();
 
-        if (isAuthorOrAdmin(authorId, session)) {
+        if (!isAuthorOrAdmin(authorId, session)) {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
