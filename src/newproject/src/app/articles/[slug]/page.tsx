@@ -13,6 +13,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { vs2015 } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import Mermaid from "@/components/Mermaid";
 import TableOfContents from "@/components/TableOfContents";
+import { toString } from "mdast-util-to-string";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -21,6 +22,19 @@ type Props = {
 type ArticleWithAuthor = Prisma.ArticleGetPayload<{
     include: { author: true };
 }>;
+
+const generateUniqueId = (text: string, idCounter: { [key: string]: number }) => {
+    let id = text;
+
+    if (idCounter[id] !== undefined) {
+        idCounter[id]++;
+        id = `${text}-${idCounter[id]}`;
+    } else {
+        idCounter[id] = 0;
+    }
+
+    return id;
+}
 
 const ArticlePage: React.FC<Props> = async ({ params }) => {
     const session = await getServerSession(authOptions);
@@ -42,7 +56,22 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
         notFound();
     }
 
-    const content = await readMarkdown(slug);
+    let content: string;
+
+    try {
+        content = await readMarkdown(slug);
+    } catch (error) {
+        console.error('Error reading markdown:', error);
+
+        return (
+            <div className="container mx-auto p-4">
+                <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
+                <p className="text-red-500">Failed to load article content.</p>
+            </div>
+        );
+    }
+
+    const idCounter: { [key: string]: number } = {};
 
     return (
         <div className="container mx-auto p-4">
@@ -84,15 +113,18 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                             }
                         },
                         h1({ node, children, ...props }) {
-                            const id = children?.toString() || "";
+                            const text = toString(node) || '';
+                            const id = generateUniqueId(text, idCounter);
                             return <h1 id={encodeURIComponent(id)} {...props}>{children}</h1>
                         },
                         h2({ node, children, ...props }) {
-                            const id = children?.toString() || "";
+                            const text = toString(node) || '';
+                            const id = generateUniqueId(text, idCounter);
                             return <h2 id={encodeURIComponent(id)} {...props}>{children}</h2>
                         },
                         h3({ node, children, ...props }) {
-                            const id = children?.toString() || "";
+                            const text = toString(node) || '';
+                            const id = generateUniqueId(text, idCounter);
                             return <h3 id={encodeURIComponent(id)} {...props}>{children}</h3>
                         },
                     }}

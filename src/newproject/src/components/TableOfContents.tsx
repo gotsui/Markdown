@@ -15,6 +15,15 @@ type TableOfContentsProps = {
     markdown: string;
 };
 
+// インデントのマッピング（Tailwind クラス）
+const indentClasses: { [key: number]: string } = {
+    0: 'ml-0',
+    4: 'ml-4',
+    8: 'ml-8',
+    12: 'ml-12',
+    16: 'ml-16',
+};
+
 const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown }) => {
     const [toc, setToc] = useState<TocItem[]>([]);
 
@@ -23,11 +32,24 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown }) => {
             const processor = remark();
             const tree = processor.parse(markdown);
             const items: TocItem[] = [];
+            const idCounter: { [key: string]: number} = {};
 
             visit(tree, "heading", (node: any) => {
                 const text: string = toString(node);
-                const id = text;
-                items.push({id, text, depth: node.depth});
+
+                if (text.trim()) {
+                    let id = text;
+
+                    // ユニークid作成
+                    if (idCounter[id] !== undefined) {
+                        idCounter[id]++;
+                        id = `${text}-${idCounter[id]}`;
+                    } else {
+                        idCounter[id] = 0;
+                    }
+
+                    items.push({id, text, depth: node.depth});
+                }
             });
 
             setToc(items);
@@ -47,7 +69,7 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown }) => {
                 {toc.map((item) => (
                     <li
                         key={item.id}
-                        className={`ml-${(item.depth - 1) * 4} mb-1`}
+                        className={`${indentClasses[(item.depth - 1) * 4] || 'ml-0'} mb-1`}
                     >
                         <a
                             href={`#${encodeURIComponent(item.id)}`}
