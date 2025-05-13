@@ -108,36 +108,51 @@ const EditArticle: React.FC<Props> = ({ params }) => {
 
     return (
         <div className="container mx-auto p-4">
-            <input
-                type="text"
-                placeholder="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="w-full p-2 mb-4 border"
-            />
-            <input
-                type="text"
-                placeholder="Slug"
-                value={slug}
-                onChange={(e) => setSlug(e.target.value)}
-                className="w-full p-2 mb-4 border"
-            />
-            <textarea
-                placeholder="Description"
-                value={description ? description : ""}
-                onChange={(e) => setDescription(e.target.value)}
-                className="w-full p-2 mb-4 border rounded"
-                spellCheck={false}
-            />
-            <select
-                value={visibility}
-                onChange={(e) => setVisibility(e.target.value as typeof visibility)}
-                className="w-full p-2 mb-4 border"
-            >
-                <option value="PUBLIC">公開</option>
-                <option value="PRIVATE">非公開</option>
-                <option value="DRAFT">下書き</option>
-            </select>
+            <details className="border rounded-lg p-4 mb-2" open>
+                <summary className="cursor-pointer font-semibold text-lg flex items-center">
+                    <span className="mr-2">メタデータ</span>
+                    <svg
+                        className="w-5 h-5 transform transition-transform duration-200 [&[open]]:rotate-180"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </summary>
+                <div className="mt-4 space-y-4">
+                    <input
+                        type="text"
+                        placeholder="Title"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        className="w-full p-2 mb-4 border"
+                    />
+                    <input
+                        type="text"
+                        placeholder="Slug"
+                        value={slug}
+                        onChange={(e) => setSlug(e.target.value)}
+                        className="w-full p-2 mb-4 border"
+                    />
+                    <textarea
+                        placeholder="Description"
+                        value={description ? description : ""}
+                        onChange={(e) => setDescription(e.target.value)}
+                        className="w-full p-2 mb-4 border rounded"
+                        spellCheck={false}
+                    />
+                    <select
+                        value={visibility}
+                        onChange={(e) => setVisibility(e.target.value as typeof visibility)}
+                        className="w-full p-2 mb-4 border"
+                    >
+                        <option value="PUBLIC">公開</option>
+                        <option value="PRIVATE">非公開</option>
+                        <option value="DRAFT">下書き</option>
+                    </select>
+                </div>
+            </details>
             <MarkdownEditor value={content} onChange={setContent} />
             <button
                 onClick={handleSubmit}
