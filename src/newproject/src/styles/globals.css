@@ -4,3 +4,8 @@
 .prose {
   max-width: none;
 }
+
+/* 折りたたみアイコンの回転 */
+details[open] .transform[open] {
+  transform: rotate(180deg);
+}
