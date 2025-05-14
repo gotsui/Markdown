@@ -11,6 +11,14 @@ type MarkdownEditorProps = {
 };
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: MarkdownEditorProps) => {
+    const [markdown, setMarkdown] = useState(value);
+
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const nextValue = e.target.value;
+        setMarkdown(nextValue);
+        onChange(nextValue);
+    }
+
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key !== "Tab") {
             return;
@@ -28,20 +36,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
         textarea.selectionEnd = cursorPosition + 1;
     }
 
-    const [markdown, setMarkdown] = useState(value);
-
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const newValue = e.target.value;
-        setMarkdown(newValue);
-        onChange(newValue);
-    }
-
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
                 <h2 className="text-lg font-semibold mb-2">編集</h2>
                 <textarea
-                    // ref={textareaRef}
                     value={markdown}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
