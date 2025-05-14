@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef, useState } from "react";
+import React, { useState } from "react";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
@@ -11,30 +11,22 @@ type MarkdownEditorProps = {
 };
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: MarkdownEditorProps) => {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
-
-    const handleKeyDown = useCallback((e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key !== "Tab") {
             return;
         }
 
         e.preventDefault();
 
-        if (!textareaRef.current) {
-            return;
-        }
-
-        const cursorPosition = textareaRef.current.selectionStart;
-
-        if (!cursorPosition) {
-            return;
-        }
-
-        const cursorLeft = textareaRef.current.value.substring(0, cursorPosition);
-        const cursorRight = textareaRef.current.value.substring(cursorPosition, textareaRef.current.value.length);
-        textareaRef.current.value = cursorLeft + "\t" + cursorRight;
-        textareaRef.current.selectionEnd = cursorPosition + 1;
-    }, [value, onChange]);
+        const textarea = e.target as HTMLTextAreaElement;
+        const cursorPosition = textarea.selectionStart;
+        const contentLeft = textarea.value.substring(0, cursorPosition);
+        const contentRight = textarea.value.substring(cursorPosition);
+        const nextValue = contentLeft + "\t" + contentRight;
+        setMarkdown(nextValue);
+        onChange(nextValue);
+        textarea.selectionEnd = cursorPosition + 1;
+    }
 
     const [markdown, setMarkdown] = useState(value);
 
@@ -49,7 +41,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
             <div>
                 <h2 className="text-lg font-semibold mb-2">編集</h2>
                 <textarea
-                    ref={textareaRef}
+                    // ref={textareaRef}
                     value={markdown}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
