@@ -9,3 +9,7 @@
 details[open] .transform[open] {
   transform: rotate(180deg);
 }
+
+textarea {
+  overflow-anchor: none;
+}
