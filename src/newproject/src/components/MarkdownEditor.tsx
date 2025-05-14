@@ -45,13 +45,13 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     placeholder="Markdownを入力してください"
-                    className="w-full h-64 p-2 border rounded resize-y"
+                    className="w-full h-160 p-2 border rounded resize-y"
                     spellCheck={false}
                 />
             </div>
             <div>
                 <h2 className="text-lg font-semibold mb-2">プレビュー</h2>
-                <div className="prose max-w-none border rounded p-2 h-64 overflow-auto">
+                <div className="prose max-w-none border rounded p-2 h-160 overflow-auto">
                     <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
                         {markdown}
                     </Markdown>
