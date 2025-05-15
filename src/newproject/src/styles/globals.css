@@ -6,7 +6,7 @@
 }
 
 /* 折りたたみアイコンの回転 */
-details[open] .transform[open] {
+details[open] .transform {
   transform: rotate(180deg);
 }
 
