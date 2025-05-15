@@ -5,6 +5,7 @@ import React, { useState, ChangeEvent, useRef } from 'react';
 const TabToMarkdownTable: React.FC = () => {
     const [input, setInput] = useState<string>('');
     const [output, setOutput] = useState<string>('');
+    const [copyStatus, setCopyStatus] = useState<string>('');
     const outputRef = useRef<HTMLTextAreaElement>(null);
 
     const convertToMarkdownTable = (text: string): string => {
@@ -57,6 +58,29 @@ const TabToMarkdownTable: React.FC = () => {
         }
     };
 
+    const handleCopyToClipboard = () => {
+        if (!outputRef.current || !output) {
+            setCopyStatus('Nothing to copy');
+            return;
+        }
+
+        try {
+            outputRef.current.select();
+            const success = document.execCommand('copy');
+            if (success) {
+                setCopyStatus('Copied to clipboard!');
+            } else {
+                setCopyStatus('Copy failed. Please copy manually.');
+            }
+        } catch (err) {
+            setCopyStatus('Copy failed. Please copy manually.');
+            console.error('Copy error:', err);
+        }
+
+        // ステータスメッセージを3秒後にクリア
+        setTimeout(() => setCopyStatus(''), 3000);
+    };
+
     return (
         <div className="max-w-2xl mx-auto p-6">
             <h2 className="text-2xl font-bold mb-6 text-center">Tab to Markdown Table Converter</h2>
@@ -79,6 +103,7 @@ const TabToMarkdownTable: React.FC = () => {
                         <label htmlFor="output" className="block text-sm font-medium text-gray-700">
                             Output (Markdown Table)
                         </label>
+                        <div className="flex space-x-2">
                         <button
                             onClick={handleSelectAll}
                             disabled={!output}
@@ -86,6 +111,14 @@ const TabToMarkdownTable: React.FC = () => {
                         >
                             Select All
                         </button>
+                        <button
+                            onClick={handleCopyToClipboard}
+                            disabled={!output}
+                            className="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            Copy
+                        </button>
+                        </div>
                     </div>
                     <textarea
                         id="output"
