@@ -33,7 +33,10 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
         const nextValue = contentLeft + "\t" + contentRight;
         setMarkdown(nextValue);
         onChange(nextValue);
-        textarea.selectionEnd = cursorPosition + 1;
+
+        setTimeout(() => {
+            textarea.selectionEnd = cursorPosition + 1;
+        }, 0);
     }
 
     return (
