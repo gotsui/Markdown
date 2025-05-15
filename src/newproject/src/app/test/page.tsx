@@ -1,30 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, ChangeEvent, useRef } from 'react';
 
-const TestPage = () => {
-    const [input, setInput] = useState("");
-    const [output, setOutput] = useState("");
+const TabToMarkdownTable: React.FC = () => {
+    const [input, setInput] = useState<string>('');
+    const [output, setOutput] = useState<string>('');
+    const outputRef = useRef<HTMLTextAreaElement>(null);
 
     const convertToMarkdownTable = (text: string): string => {
-        if (!text.trim()) {
-            return "";
-        }
+        if (!text.trim()) return '';
 
-        // 行ごとに分割
         const rows = text.trim().split('\n').map(row => row.split('\t'));
-
-        // ヘッダー行
         const headers = rows[0];
-        if (!headers) {
-            return "";
-        }
+        if (!headers) return '';
 
-        // テーブルヘッダー
         let markdown = `|${headers.join('|')}|\n`;
-        // セパレータ行
         markdown += `|${headers.map(() => '-').join('|')}|\n`;
-        // データ行
         rows.slice(1).forEach(row => {
             markdown += `|${row.join('|')}|\n`;
         });
@@ -32,63 +23,77 @@ const TestPage = () => {
         return markdown;
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
         const value = e.target.value;
         setInput(value);
         setOutput(convertToMarkdownTable(value));
     };
-    
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key !== "Tab") {
-            return;
+
+    const handleSelectAll = () => {
+        if (outputRef.current) {
+            outputRef.current.select();
         }
+    };
 
-        e.preventDefault();
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (e.key === 'Tab') {
+            e.preventDefault(); // デフォルトのタブ移動をキャンセル
+            const textarea = e.target as HTMLTextAreaElement;
+            const start = textarea.selectionStart;
+            const end = textarea.selectionEnd;
+            const value = textarea.value;
 
-        const textarea = e.target as HTMLTextAreaElement;
-        const cursorPosition = textarea.selectionStart;
-        const contentLeft = textarea.value.substring(0, cursorPosition);
-        const contentRight = textarea.value.substring(cursorPosition);
-        const nextValue = contentLeft + "\t" + contentRight;
-        setInput(nextValue);
-        setOutput(nextValue);
-        textarea.selectionEnd = cursorPosition + 1;
-    }
+            // カーソル位置にタブ文字を挿入
+            const newValue = value.substring(0, start) + '\t' + value.substring(end);
+            setInput(newValue);
+
+            // カーソルをタブ文字の後ろに移動
+            setTimeout(() => {
+                textarea.selectionStart = textarea.selectionEnd = start + 1;
+            }, 0);
+
+            // 変換を更新
+            setOutput(convertToMarkdownTable(newValue));
+        }
+    };
 
     return (
-        <div style={{ padding: '20px', maxWidth: '800px', margin: '0 auto' }}>
-            <h2>Tab to Markdown Table Converter</h2>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div className="max-w-2xl mx-auto p-6">
+            <h2 className="text-2xl font-bold mb-6 text-center">Tab to Markdown Table Converter</h2>
+            <div className="space-y-6">
                 <div>
-                    <label htmlFor="input">Input (Tab-separated data):</label>
+                    <label htmlFor="input" className="block text-sm font-medium text-gray-700 mb-2">
+                        Input (Tab-separated data)
+                    </label>
                     <textarea
                         id="input"
                         value={input}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         placeholder="Enter tab-separated data (e.g., a\tb\tc\n1\t2\t3)"
-                        style={{
-                            width: '100%',
-                            minHeight: '100px',
-                            fontFamily: 'monospace',
-                            resize: 'vertical',
-                        }}
+                        className="w-full h-32 p-3 font-mono text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
                 </div>
                 <div>
-                    <label htmlFor="output">Output (Markdown Table):</label>
+                    <div className="flex justify-between items-center mb-2">
+                        <label htmlFor="output" className="block text-sm font-medium text-gray-700">
+                            Output (Markdown Table)
+                        </label>
+                        <button
+                            onClick={handleSelectAll}
+                            disabled={!output}
+                            className="px-3 py-1 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        >
+                            Select All
+                        </button>
+                    </div>
                     <textarea
                         id="output"
+                        ref={outputRef}
                         value={output}
                         readOnly
                         placeholder="Markdown table will appear here"
-                        style={{
-                            width: '100%',
-                            minHeight: '100px',
-                            fontFamily: 'monospace',
-                            resize: 'vertical',
-                            backgroundColor: '#f5f5f5',
-                        }}
+                        className="w-full h-32 p-3 font-mono text-sm border rounded-md bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
                 </div>
             </div>
@@ -96,4 +101,4 @@ const TestPage = () => {
     );
 };
 
-export default TestPage;
+export default TabToMarkdownTable;

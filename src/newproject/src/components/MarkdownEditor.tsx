@@ -17,7 +17,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
         const nextValue = e.target.value;
         setMarkdown(nextValue);
         onChange(nextValue);
-    }
+    };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key !== "Tab") {
@@ -37,7 +37,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
         setTimeout(() => {
             textarea.selectionEnd = cursorPosition + 1;
         }, 0);
-    }
+    };
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
