@@ -14,6 +14,9 @@ const logger = pino({
                 level: label,
             };
         },
+        bindings: () => {
+            return {};
+        },
     },
     transport: {
         target: "pino/file",
