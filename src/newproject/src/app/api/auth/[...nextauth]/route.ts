@@ -2,6 +2,7 @@ import NextAuth from "next-auth";
 import GitHubProvider from "next-auth/providers/github";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import prisma from "@/lib/prisma";
+import logger from "@/lib/logger";
 
 export const authOptions = {
     adapter: PrismaAdapter(prisma),
@@ -24,7 +25,16 @@ export const authOptions = {
             }
 
             return session;
-        }
+        },
+        async signIn({ user, account, profile }: any) {
+            const userId = user.id || profile?.sub;
+            const provider = account?.provider;
+            logger.info(
+                { userId, provider, event: "signIn" },
+                "ユーザがログインしました",
+            );
+            return true;
+        },
     }
 }
 
