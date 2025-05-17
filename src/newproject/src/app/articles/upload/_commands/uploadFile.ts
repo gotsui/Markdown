@@ -16,6 +16,8 @@ export async function uploadFile(formData: FormData) {
         return { error: "ログインしてください"};
     }
 
+    const userLogger = logger.child({ userId: session.user.id });
+
     const file = formData.get("file") as File;
     const title = formData.get("title") as string;
     const slug = formData.get("slug") as string;
@@ -23,7 +25,7 @@ export async function uploadFile(formData: FormData) {
     const visibility = formData.get("visibility") as Visibility;
 
     if (!file || !title || !slug || !visibility) {
-        logger.error({ fields: { file, title, slug, visibility } }, "必須フィールドが不足");
+        userLogger.error({ fields: { file, title, slug, visibility } }, "必須フィールドが不足");
         return { error: "必須フィールドを入力してください" };
     }
 
@@ -31,7 +33,7 @@ export async function uploadFile(formData: FormData) {
     const fileExtension = extname(file.name).toLowerCase();
 
     if (!validMimeTypes.includes(file.type) || fileExtension !== ".md") {
-        logger.error({ fileType: file.type, fileName: file.name }, "無効なファイル形式");
+        userLogger.error({ fileType: file.type, fileName: file.name }, "無効なファイル形式");
         return { error: "Markdownファイル（.md）を選択してください" };
     }
 
@@ -42,11 +44,11 @@ export async function uploadFile(formData: FormData) {
         content = Buffer.from(buffer).toString("utf-8");
 
         if (!content || content.length === 0) {
-            logger.error({ fileName: file.name }, "空のファイル");
+            userLogger.error({ fileName: file.name }, "空のファイル");
             return { error: "ファイルが空です。内容を含むMarkdownファイルを選択してください" };
         }
     } catch (error) {
-        logger.error({ fileName: file.name, error }, "ファイルの読み込みに失敗");
+        userLogger.error({ fileName: file.name, error }, "ファイルの読み込みに失敗");
         return { error: "ファイルの読み込みに失敗しました。別のファイルを選択してください" };
     }
 
@@ -54,7 +56,7 @@ export async function uploadFile(formData: FormData) {
         const existingArticle = await prisma.article.findUnique({ where: { slug }});
 
         if (existingArticle) {
-            logger.error({ slug }, "スラッグ重複");
+            userLogger.error({ slug }, "スラッグ重複");
             return { error: "このスラッグは既に使用されています" };
         }
 
@@ -70,7 +72,7 @@ export async function uploadFile(formData: FormData) {
             },
         });
 
-        logger.info({ articleId: article.id, slug }, "記事をアップロード");
+        userLogger.info({ articleId: article.id, slug }, "記事をアップロード");
         revalidatePath("/articles");
         return { success: true, article };
     } catch (error) {
