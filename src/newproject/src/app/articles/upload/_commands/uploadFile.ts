@@ -7,16 +7,19 @@ import logger from "@/lib/logger";
 import { saveMarkdown } from "@/lib/markdown";
 import { Visibility } from "@prisma/client";
 import { extname } from "path";
+import { headers } from "next/headers";
 
 export async function uploadFile(formData: FormData) {
     const session = await getServerSession(authOptions);
+    const userId = session?.user?.id ?? null;
+    const headersList = await headers();
+    const requestUrl = headersList.get("x-request-url") || undefined;
+    const userLogger = logger.child({ userId, requestUrl, event: "uploadFile" });
 
     if (!session?.user?.id) {
-        logger.warn({ userId: null }, "未認証のアップロード試行");
+        userLogger.warn({}, "未認証のアップロード試行");
         return { error: "ログインしてください"};
     }
-
-    const userLogger = logger.child({ userId: session.user.id });
 
     const file = formData.get("file") as File;
     const title = formData.get("title") as string;
