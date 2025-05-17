@@ -18,6 +18,9 @@ const NavBar: React.FC = () => {
                     <Link href="/articles/new" className="text-white hover:text-gray-300">
                         New Article
                     </Link>
+                    <Link href="/articles/upload" className="text-white hover:text-gray-300">
+                        Upload
+                    </Link>
                     <AuthButton />
                 </div>
             </div>
