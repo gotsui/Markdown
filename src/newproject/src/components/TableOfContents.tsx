@@ -17,11 +17,12 @@ type TableOfContentsProps = {
 
 // インデントのマッピング（Tailwind クラス）
 const indentClasses: { [key: number]: string } = {
-    0: 'ml-0',
-    4: 'ml-4',
-    8: 'ml-8',
-    12: 'ml-12',
-    16: 'ml-16',
+    0: "ml-0",
+    4: "ml-4",
+    8: "ml-8",
+    12: "ml-12",
+    16: "ml-16",
+    20: "ml-20",
 };
 
 const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown }) => {
