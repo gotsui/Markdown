@@ -24,9 +24,9 @@ const ArticlesPage = async () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">記事一覧</h1>
+            <h1 className="text-2xl font-bold mb-4">ドキュメント一覧</h1>
             <div className="grid gap-4">
-                {articles.length === 0 && <p>記事がありません。</p>}
+                {articles.length === 0 && <p>ドキュメントがありません。</p>}
                 {articles.map((article: any) => (
                     <ArticleCard key={article.id} article={article} session={session} />
                 ))}

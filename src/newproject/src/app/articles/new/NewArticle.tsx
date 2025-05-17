@@ -58,7 +58,7 @@ const NewArticle: React.FC = () => {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">Create New Article</h1>
+            <h1 className="text-2xl font-bold mb-4">新規作成</h1>
             <input
                 type="text"
                 placeholder="Title"

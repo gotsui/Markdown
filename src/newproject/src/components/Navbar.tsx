@@ -9,17 +9,17 @@ const NavBar: React.FC = () => {
         <nav className="bg-gray-800 p-4">
             <div className="container mx-auto flex justify-between items-center">
                 <div className="text-white text-lg font-bold">
-                    <Link href="/">Article App</Link>
+                    <Link href="/">ドキュメント管理ツール</Link>
                 </div>
                 <div className="flex space-x-4 items-center">
                     <Link href="/articles" className="text-white hover:text-gray-300">
-                        Articles
+                        一覧
                     </Link>
                     <Link href="/articles/new" className="text-white hover:text-gray-300">
-                        New Article
+                        新規作成
                     </Link>
                     <Link href="/articles/upload" className="text-white hover:text-gray-300">
-                        Upload
+                        アップロード
                     </Link>
                     <AuthButton />
                 </div>

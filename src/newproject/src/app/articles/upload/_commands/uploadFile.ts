@@ -54,8 +54,8 @@ export async function uploadFile(formData: FormData) {
         const existingArticle = await prisma.article.findUnique({ where: { slug }});
 
         if (existingArticle) {
-            logger.error({ slug }, "スラグ重複");
-            return { error: "このslugは既に使用されています" };
+            logger.error({ slug }, "スラッグ重複");
+            return { error: "このスラッグは既に使用されています" };
         }
 
         await saveMarkdown(slug, content);

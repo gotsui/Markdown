@@ -44,7 +44,7 @@ export const UploadForm: React.FC<Props> = ({ onSuccess }) => {
 						/>
 					</div>
 					<div>
-						<label className="block text-sm font-medium">スラグ</label>
+						<label className="block text-sm font-medium">スラッグ</label>
 						<input
 							type="text"
 							name="slug"
@@ -74,7 +74,7 @@ export const UploadForm: React.FC<Props> = ({ onSuccess }) => {
 						</select>
 					</div>
 					<div>
-						<label className="block text-sm font-medium">Markdownファイル</label>
+						<label className="block text-sm font-medium">ファイル</label>
 						<input
 							type="file"
 							name="file"
