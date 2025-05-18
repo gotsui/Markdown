@@ -19,6 +19,10 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     const [content, setContent] = useState("");
     const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE" | "DRAFT">("PUBLIC");
     const [loading, setLoading] = useState(true);
+    const [stayOnPage, setStayOnPage] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    const [successMessage, setSuccessMessage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -72,6 +76,10 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     }
 
     const handleSubmit = async () => {
+        setIsLoading(true);
+        setError(null);
+        setSuccessMessage(null);
+
         try {
             // メタデータ更新
             const res = await fetch(`/api/articles`, {
@@ -86,6 +94,9 @@ const EditArticle: React.FC<Props> = ({ params }) => {
             });
 
             if (!res.ok) {
+                const data = await res.json();
+                setError(data.error || "保存に失敗しました");
+                setIsLoading(false);
                 throw new Error("Failed to update article");
             }
 
@@ -97,10 +108,18 @@ const EditArticle: React.FC<Props> = ({ params }) => {
             });
 
             if (!markdownRes.ok) {
+                const data = await markdownRes.json();
+                setError(data.error || "保存に失敗しました");
+                setIsLoading(false);
                 throw new Error("Failed to save markdown");
             }
 
-            router.push(`/articles/${slug}`);
+            setIsLoading(false);
+            setSuccessMessage("保存しました");
+
+            if (!stayOnPage) {
+                router.push(`/articles/${slug}`);
+            }
         } catch (error) {
             console.error("Error updating article:", error);
         }
@@ -154,11 +173,28 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                 </div>
             </details>
             <MarkdownEditor value={content} onChange={setContent} />
+            <div className="flex items-center">
+                <input
+                    type="checkbox"
+                    checked={stayOnPage}
+                    onChange={(e) => setStayOnPage(e.target.checked)}
+                    className="mr-2"
+                    id="stayOnPage"
+                />
+                <label htmlFor="stayOnPage" className="text-sm">保存後このページに留まる</label>
+            </div>
+            {error && <p className="text-red-500">{error}</p>}
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
             <button
                 onClick={handleSubmit}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                className="
+                    mt-4 px-4 py-2 bg-blue-500
+                    text-white rounded
+                    hover:bg-blue-600 disabled:bg-gray-400
+                "
+                disabled={isLoading}
             >
-                更新
+                {isLoading ? "保存中..." : "保存"}
             </button>
         </div>
     );
