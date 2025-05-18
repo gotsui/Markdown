@@ -31,7 +31,7 @@ export const authOptions = {
             const provider = account?.provider;
             logger.info(
                 { userId, provider, event: "signIn" },
-                "ユーザがログインしました",
+                "ユーザログイン",
             );
             return true;
         },

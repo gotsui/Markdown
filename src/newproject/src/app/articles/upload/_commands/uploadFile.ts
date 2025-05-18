@@ -14,7 +14,7 @@ export async function uploadFile(formData: FormData) {
     const userId = session?.user?.id ?? null;
     const headersList = await headers();
     const requestUrl = headersList.get("x-request-url") || undefined;
-    const userLogger = logger.child({ userId, requestUrl, event: "uploadFile" });
+    const userLogger = logger.child({ userId, url: requestUrl, event: "uploadFile" });
 
     if (!session?.user?.id) {
         userLogger.warn({}, "未認証のアップロード試行");
@@ -79,7 +79,7 @@ export async function uploadFile(formData: FormData) {
         revalidatePath("/articles");
         return { success: true, article };
     } catch (error) {
-        logger.error({ error, slug }, "記事アップロードに失敗");
+        userLogger.error({ error, slug }, "記事アップロードに失敗");
         return { error: "アップロードに失敗しました" };
     }
 }

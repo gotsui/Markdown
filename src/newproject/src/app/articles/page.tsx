@@ -4,9 +4,16 @@ import { authOptions } from "../api/auth/[...nextauth]/route";
 import ArticleCard from "@/components/ArticleCard";
 import React from "react";
 import { Prisma } from "@prisma/client";
+import { headers } from "next/headers";
+import logger from "@/lib/logger";
 
 const ArticlesPage = async () => {
     const session = await getServerSession(authOptions);
+    const userId = session?.user?.id ?? null;
+    const headersList = await headers();
+    const requestUrl = headersList.get("x-request-url") || undefined;
+    const userLogger = logger.child({ userId, url: requestUrl, event: "ArticlesPage" });
+    userLogger.info({});
 
     const whereClause: { OR: Prisma.ArticleWhereInput[] } = {
         OR: [{ visibility: "PUBLIC" }],

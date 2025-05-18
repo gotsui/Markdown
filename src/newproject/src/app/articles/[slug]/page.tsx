@@ -14,6 +14,8 @@ import { vs2015 } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import Mermaid from "@/components/Mermaid";
 import TableOfContents from "@/components/TableOfContents";
 import { toString } from "mdast-util-to-string";
+import { headers } from "next/headers";
+import logger from "@/lib/logger";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -34,11 +36,17 @@ const generateUniqueId = (text: string, idCounter: { [key: string]: number }) =>
     }
 
     return id;
-}
+};
 
 const ArticlePage: React.FC<Props> = async ({ params }) => {
     const session = await getServerSession(authOptions);
     const { slug } = await params;
+    const userId = session?.user?.id ?? null;
+    const headersList = await headers();
+    const requestUrl = headersList.get("x-request-url") || undefined;
+    const userLogger = logger.child({ userId, url: requestUrl, event: "ArticlePage" });
+    userLogger.info({});
+
     const article: ArticleWithAuthor | null = await prisma.article.findUnique({
         where: {
             slug: slug,
@@ -49,10 +57,12 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     });
 
     if (!article) {
+        userLogger.warn({ slug }, "対象記事なし");
         notFound();
     }
 
     if (article.visibility !== "PUBLIC" && !isAuthorOrAdmin(article.authorId, session)) {
+        userLogger.warn({ slug }, "対象記事閲覧権限なし");
         notFound();
     }
 
@@ -61,7 +71,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     try {
         content = await readMarkdown(slug);
     } catch (error) {
-        console.error('Error reading markdown:', error);
+        userLogger.error({ slug }, "対象記事取得失敗");
 
         return (
             <div className="container mx-auto p-4">
