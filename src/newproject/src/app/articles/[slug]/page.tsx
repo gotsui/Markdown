@@ -16,6 +16,7 @@ import TableOfContents from "@/components/TableOfContents";
 import { toString } from "mdast-util-to-string";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
+import ArticleDownloadButton from "@/components/ArticleDownloadButton";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -90,8 +91,9 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
             <p className="text-sm text-gray-500 mb-4">
                 作成者: {article.author.name || "匿名"} | 公開状態: {article.visibility}
             </p>
-            <div className="mb-4">
+            <div className="flex space-x-4 mb-4">
                 <EditButton slug={slug} authorId={article.authorId} session={session} />
+                <ArticleDownloadButton slug={slug} />
             </div>
             <TableOfContents markdown={content} />
             <div className="prose max-w-none">
@@ -99,6 +101,9 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                     remarkPlugins={[remarkGfm]}
                     rehypePlugins={[rehypeRaw]}
                     components={{
+                        pre({children}) {
+                            return children
+                        },
                         code({ node, className, children, ref, ...props }) {
                             if (
                                 className === "language-mermaid" &&
