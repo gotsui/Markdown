@@ -128,6 +128,15 @@ const TabToMarkdownTable: React.FC = () => {
                         placeholder="Markdown table will appear here"
                         className="w-full h-32 p-3 font-mono text-sm border rounded-md bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
+                    {copyStatus && (
+                        <p
+                            className={`mt-2 text-sm ${
+                                copyStatus.includes('Copied') ? 'text-green-600' : 'text-red-600'
+                            }`}
+                        >
+                            {copyStatus}
+                        </p>
+                    )}
                 </div>
             </div>
         </div>
