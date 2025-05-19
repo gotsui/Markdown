@@ -28,7 +28,7 @@ export const UploadForm: React.FC<Props> = ({ onSuccess }) => {
 		if (onSuccess) {
 			onSuccess();
 		}
-	}
+	};
 
     return (
         <div className="overflow-hidden rounded-lg bg-white shadow">
@@ -99,4 +99,4 @@ export const UploadForm: React.FC<Props> = ({ onSuccess }) => {
             </div>
         </div>
     );
-}
+};

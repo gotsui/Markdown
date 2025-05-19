@@ -72,7 +72,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     try {
         content = await readMarkdown(slug);
     } catch (error) {
-        userLogger.error({ slug }, "対象記事取得失敗");
+        userLogger.error({ slug, error }, "対象記事取得失敗");
 
         return (
             <div className="container mx-auto p-4">
@@ -102,14 +102,14 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                     rehypePlugins={[rehypeRaw]}
                     components={{
                         pre({children}) {
-                            return children
+                            return children;
                         },
                         code({ node, className, children, ref, ...props }) {
                             if (
                                 className === "language-mermaid" &&
                                 node?.children[0].type === "text"
                             ) {
-                                return <Mermaid code={node?.children[0].value} />
+                                return <Mermaid code={node?.children[0].value} />;
                             } else {
                                 const match = /language-(\w+)/.exec(className || "");
 
@@ -124,23 +124,38 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                                     </SyntaxHighlighter>
                                 ) : (
                                     <code className={className}>{children}</code>
-                                )
+                                );
                             }
                         },
                         h1({ node, children, ...props }) {
                             const text = toString(node) || '';
                             const id = generateUniqueId(text, idCounter);
-                            return <h1 id={encodeURIComponent(id)} {...props}>{children}</h1>
+                            return <h1 id={encodeURIComponent(id)} {...props}>{children}</h1>;
                         },
                         h2({ node, children, ...props }) {
                             const text = toString(node) || '';
                             const id = generateUniqueId(text, idCounter);
-                            return <h2 id={encodeURIComponent(id)} {...props}>{children}</h2>
+                            return <h2 id={encodeURIComponent(id)} {...props}>{children}</h2>;
                         },
                         h3({ node, children, ...props }) {
                             const text = toString(node) || '';
                             const id = generateUniqueId(text, idCounter);
-                            return <h3 id={encodeURIComponent(id)} {...props}>{children}</h3>
+                            return <h3 id={encodeURIComponent(id)} {...props}>{children}</h3>;
+                        },
+                        h4({ node, children, ...props }) {
+                            const text = toString(node) || '';
+                            const id = generateUniqueId(text, idCounter);
+                            return <h4 id={encodeURIComponent(id)} {...props}>{children}</h4>;
+                        },
+                        h5({ node, children, ...props }) {
+                            const text = toString(node) || '';
+                            const id = generateUniqueId(text, idCounter);
+                            return <h5 id={encodeURIComponent(id)} {...props}>{children}</h5>;
+                        },
+                        h6({ node, children, ...props }) {
+                            const text = toString(node) || '';
+                            const id = generateUniqueId(text, idCounter);
+                            return <h6 id={encodeURIComponent(id)} {...props}>{children}</h6>;
                         },
                     }}
                 >
