@@ -18,11 +18,11 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     const [description, setDescription] = useState("");
     const [content, setContent] = useState("");
     const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE" | "DRAFT">("PUBLIC");
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [stayOnPage, setStayOnPage] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
         const fetchArticle = async () => {
@@ -58,7 +58,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                 console.error("Error fetching article:", error);
                 router.push("/articles");
             } finally {
-                setLoading(false);
+                setIsLoading(false);
             }
         };
 
@@ -67,7 +67,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
         }
     }, [params.slug, session, status, router]);
 
-    if (status === "loading" || loading) {
+    if (status === "loading" || isLoading) {
         return <div>Loading...</div>;
     }
 
@@ -76,7 +76,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     }
 
     const handleSubmit = async () => {
-        setIsLoading(true);
+        setIsSaving(true);
         setError(null);
         setSuccessMessage(null);
 
@@ -96,7 +96,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
             if (!res.ok) {
                 const data = await res.json();
                 setError(data.error || "保存に失敗しました");
-                setIsLoading(false);
+                setIsSaving(false);
                 throw new Error("Failed to update article");
             }
 
@@ -110,11 +110,11 @@ const EditArticle: React.FC<Props> = ({ params }) => {
             if (!markdownRes.ok) {
                 const data = await markdownRes.json();
                 setError(data.error || "保存に失敗しました");
-                setIsLoading(false);
+                setIsSaving(false);
                 throw new Error("Failed to save markdown");
             }
 
-            setIsLoading(false);
+            setIsSaving(false);
             setSuccessMessage("保存しました");
 
             if (!stayOnPage) {
@@ -192,9 +192,9 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                     text-white rounded
                     hover:bg-blue-600 disabled:bg-gray-400
                 "
-                disabled={isLoading}
+                disabled={isSaving}
             >
-                {isLoading ? "保存中..." : "保存"}
+                {isSaving ? "保存中..." : "保存"}
             </button>
         </div>
     );
