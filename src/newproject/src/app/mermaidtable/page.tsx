@@ -38,24 +38,26 @@ const TabToMarkdownTable: React.FC = () => {
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key === 'Tab') {
-            e.preventDefault(); // デフォルトのタブ移動をキャンセル
-            const textarea = e.target as HTMLTextAreaElement;
-            const start = textarea.selectionStart;
-            const end = textarea.selectionEnd;
-            const value = textarea.value;
-
-            // カーソル位置にタブ文字を挿入
-            const newValue = value.substring(0, start) + '\t' + value.substring(end);
-            setInput(newValue);
-
-            // カーソルをタブ文字の後ろに移動
-            setTimeout(() => {
-                textarea.selectionStart = textarea.selectionEnd = start + 1;
-            }, 0);
-
-            // 変換を更新
-            setOutput(convertToMarkdownTable(newValue));
+            return;
         }
+
+        e.preventDefault(); // デフォルトのタブ移動をキャンセル
+        const textarea = e.target as HTMLTextAreaElement;
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const value = textarea.value;
+
+        // カーソル位置にタブ文字を挿入
+        const newValue = value.substring(0, start) + '\t' + value.substring(end);
+        setInput(newValue);
+
+        // カーソルをタブ文字の後ろに移動
+        setTimeout(() => {
+            textarea.selectionStart = textarea.selectionEnd = start + 1;
+        }, 0);
+
+        // 変換を更新
+        setOutput(convertToMarkdownTable(newValue));
     };
 
     const handleCopyToClipboard = () => {
