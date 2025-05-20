@@ -16,7 +16,7 @@ export async function GET(req: NextRequest) {
 
     if (!slug) {
         userLogger.warn({ slug }, "スラッグなし");
-        return NextResponse.json({ error: "File not found"}, { status: 404 });
+        return NextResponse.json({ error: "File not found" }, { status: 404 });
     }
 
     try {

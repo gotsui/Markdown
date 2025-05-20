@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json(article, { status: 201 });
     } catch (error) {
         userLogger.error({ error }, "記事作成失敗");
-        return NextResponse.json({ error: "Failed to create article"}, { status: 500 });
+        return NextResponse.json({ error: "Failed to create article" }, { status: 500 });
     }
 }
 
