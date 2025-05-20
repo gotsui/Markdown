@@ -1,24 +1,24 @@
 "use client";
 
-import React, { useState, ChangeEvent, useRef } from 'react';
+import React, { useState, ChangeEvent, useRef } from "react";
 
 const TabToMarkdownTable: React.FC = () => {
-    const [input, setInput] = useState<string>('');
-    const [output, setOutput] = useState<string>('');
-    const [copyStatus, setCopyStatus] = useState<string>('');
+    const [input, setInput] = useState<string>("");
+    const [output, setOutput] = useState<string>("");
+    const [copyStatus, setCopyStatus] = useState<string>("");
     const outputRef = useRef<HTMLTextAreaElement>(null);
 
     const convertToMarkdownTable = (text: string): string => {
-        if (!text.trim()) return '';
+        if (!text.trim()) return "";
 
-        const rows = text.trim().split('\n').map(row => row.split('\t'));
+        const rows = text.trim().split("\n").map(row => row.split("\t"));
         const headers = rows[0];
-        if (!headers) return '';
+        if (!headers) return "";
 
-        let markdown = `|${headers.join('|')}|\n`;
-        markdown += `|${headers.map(() => '-').join('|')}|\n`;
+        let markdown = `|${headers.join("|")}|\n`;
+        markdown += `|${headers.map(() => "-").join("|")}|\n`;
         rows.slice(1).forEach(row => {
-            markdown += `|${row.join('|')}|\n`;
+            markdown += `|${row.join("|")}|\n`;
         });
 
         return markdown;
@@ -37,7 +37,7 @@ const TabToMarkdownTable: React.FC = () => {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === 'Tab') {
+        if (e.key === "Tab") {
             return;
         }
 
@@ -48,7 +48,7 @@ const TabToMarkdownTable: React.FC = () => {
         const value = textarea.value;
 
         // カーソル位置にタブ文字を挿入
-        const newValue = value.substring(0, start) + '\t' + value.substring(end);
+        const newValue = value.substring(0, start) + "\t" + value.substring(end);
         setInput(newValue);
 
         // カーソルをタブ文字の後ろに移動
@@ -62,25 +62,25 @@ const TabToMarkdownTable: React.FC = () => {
 
     const handleCopyToClipboard = () => {
         if (!outputRef.current || !output) {
-            setCopyStatus('Nothing to copy');
+            setCopyStatus("Nothing to copy");
             return;
         }
 
         try {
             outputRef.current.select();
-            const success = document.execCommand('copy');
+            const success = document.execCommand("copy");
             if (success) {
-                setCopyStatus('Copied to clipboard!');
+                setCopyStatus("Copied to clipboard!");
             } else {
-                setCopyStatus('Copy failed. Please copy manually.');
+                setCopyStatus("Copy failed. Please copy manually.");
             }
         } catch (err) {
-            setCopyStatus('Copy failed. Please copy manually.');
-            console.error('Copy error:', err);
+            setCopyStatus("Copy failed. Please copy manually.");
+            console.error("Copy error:", err);
         }
 
         // ステータスメッセージを3秒後にクリア
-        setTimeout(() => setCopyStatus(''), 3000);
+        setTimeout(() => setCopyStatus(""), 3000);
     };
 
     return (
@@ -133,7 +133,7 @@ const TabToMarkdownTable: React.FC = () => {
                     {copyStatus && (
                         <p
                             className={`mt-2 text-sm ${
-                                copyStatus.includes('Copied') ? 'text-green-600' : 'text-red-600'
+                                copyStatus.includes("Copied") ? "text-green-600" : "text-red-600"
                             }`}
                         >
                             {copyStatus}
