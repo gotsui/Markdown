@@ -8,22 +8,76 @@ const TreeEditor: React.FC = () => {
     const [copyStatus, setCopyStatus] = useState<string>("");
     const outputRef = useRef<HTMLTextAreaElement>(null);
 
+    type Node = { name: string; children: Node[]; };
+
     const convertToTree = (text: string): string => {
         if (!text.trim()) {
             return "";
         }
 
         const rows = text.split("\n");
-        let tree = "";
 
-        for (let i = 0; i < rows.length; i++) {
-            const rowValue = rows[i];
-            const matched = rowValue.trimEnd().match(/\t/g);
-            const depth = matched ? matched.length : 0;
-            tree += `${" ".repeat(depth * 4)}${depth > 0 ? "└ " : ""}${rowValue.trim()}\n`;
+        let root: Node | null = { name: ".", children: [] };
+        root = null;
+
+        for (const rowValue of rows) {
+            root = addNode(rowValue, 0, root);
         }
 
+        if (!root) {
+            return "";
+        }
+
+        const tree = writeTree(root, "", "└", "");
         return tree;
+    };
+
+    const writeTree = (node: Node, leftRuledLine: string, myRuledLine: string, childRuledLine: string): string => {
+        let tree = "";
+        const childLeftRuledLine = `${leftRuledLine}  ${childRuledLine}`;
+        let isFirstChild = true;
+
+        for (const child of node.children.reverse()) {
+            if (isFirstChild) {
+                tree = writeTree(child, childLeftRuledLine, "  └", "");
+            } else {
+                tree = `${writeTree(child, childLeftRuledLine, "  ├", "│")}\n${tree}`;
+            }
+
+            isFirstChild = false;
+        }
+
+        tree = `${leftRuledLine}${myRuledLine} ${node.name}${tree == "" ? "" : "\n"}${tree}`;
+
+        return tree;
+    }
+
+    const addNode = (rowValue: string, nodeDepth: number, node: Node | null): Node => {
+        if (!node) {
+            return { name: rowValue.trim(), children: [] };
+        }
+
+        const matched = rowValue.trimEnd().match(/^\t*/g);
+        const depth = matched ? matched[0].length : 0;
+        const depthDiff = depth - nodeDepth;
+
+        if (depthDiff <= 0) {
+            return node;
+        } else if (depthDiff === 1) {
+            node.children.push({ name: rowValue.trim(), children: [] });
+            return node;
+        } else {
+            if (node.children.length <= 0) {
+                node.children.push({ name: rowValue.trim(), children: [] });
+                return node;
+            }
+
+            const nextNodeDepth = nodeDepth + 1;
+            const lastChild = node.children[node.children.length - 1];
+            const addedChild = addNode(rowValue, nextNodeDepth, lastChild);
+            node.children[node.children.length - 1] = addedChild;
+            return node;
+        }
     };
 
     const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
@@ -151,11 +205,11 @@ const TreeEditor: React.FC = () => {
     };
 
     return (
-        <div className="max-w-2xl mx-auto p-6">
+        <div className="container mx-auto p-4">
             <h2 className="text-2xl font-bold mb-6 text-center">Tree Editor</h2>
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
-                    <label htmlFor="input" className="block text-sm font-medium text-gray-700 mb-2">
+                    <label htmlFor="input" className="block text-sm font-medium text-gray-700 mt-1 mb-3">
                         Input (Tab-indexed data)
                     </label>
                     <textarea
@@ -164,29 +218,29 @@ const TreeEditor: React.FC = () => {
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
                         placeholder="Enter tab-separated data (e.g., parent\n\tchild\n\t\tgrandchild)"
-                        className="w-full h-32 p-3 font-mono text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
+                        className="w-full h-160 p-3 font-mono text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
                 </div>
                 <div>
                     <div className="flex justify-between items-center mb-2">
                         <label htmlFor="output" className="block text-sm font-medium text-gray-700">
-                            Output (Markdown Table)
+                            Output (Tree)
                         </label>
                         <div className="flex space-x-2">
-                        <button
-                            onClick={handleSelectAll}
-                            disabled={!output}
-                            className="px-3 py-1 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        >
-                            Select All
-                        </button>
-                        <button
-                            onClick={handleCopyToClipboard}
-                            disabled={!output}
-                            className="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        >
-                            Copy
-                        </button>
+                            <button
+                                onClick={handleSelectAll}
+                                disabled={!output}
+                                className="px-3 py-1 text-sm bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                                Select All
+                            </button>
+                            <button
+                                onClick={handleCopyToClipboard}
+                                disabled={!output}
+                                className="px-3 py-1 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                            >
+                                Copy
+                            </button>
                         </div>
                     </div>
                     <textarea
@@ -195,7 +249,7 @@ const TreeEditor: React.FC = () => {
                         value={output}
                         readOnly
                         placeholder="Markdown table will appear here"
-                        className="w-full h-32 p-3 font-mono text-sm border rounded-md bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
+                        className="w-full h-160 p-3 font-mono text-sm border rounded-md bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
                     {copyStatus && (
                         <p
