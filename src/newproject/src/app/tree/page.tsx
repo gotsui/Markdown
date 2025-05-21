@@ -7,10 +7,11 @@ const TreeEditor: React.FC = () => {
     const [output, setOutput] = useState<string>("");
     const [copyStatus, setCopyStatus] = useState<string>("");
     const outputRef = useRef<HTMLTextAreaElement>(null);
+    const [spaceNum, setSpaceNum] = useState(2);
 
     type Node = { name: string; children: Node[]; };
 
-    const convertToTree = (text: string): string => {
+    const convertToTree = (text: string, spaceNum: number): string => {
         if (!text.trim()) {
             return "";
         }
@@ -28,26 +29,30 @@ const TreeEditor: React.FC = () => {
             return "";
         }
 
-        const tree = writeTree(root, "", "└", "");
+        const tree = writeTree(root, "", "└", "", true, spaceNum);
         return tree;
     };
 
-    const writeTree = (node: Node, leftRuledLine: string, myRuledLine: string, childRuledLine: string): string => {
+    const writeTree = (node: Node, leftRuledLine: string, myRuledLine: string, childRuledLine: string, isRoot: boolean, spaceNum: number): string => {
+        const childLeftRuledLine = `${leftRuledLine}${isRoot ? "" : " ".repeat(spaceNum)}${childRuledLine}`;
         let tree = "";
-        const childLeftRuledLine = `${leftRuledLine}  ${childRuledLine}`;
         let isFirstChild = true;
 
         for (const child of node.children.reverse()) {
             if (isFirstChild) {
-                tree = writeTree(child, childLeftRuledLine, "  └", "");
+                tree = writeTree(child, childLeftRuledLine, "└", "", false, spaceNum);
             } else {
-                tree = `${writeTree(child, childLeftRuledLine, "  ├", "│")}\n${tree}`;
+                tree = `${writeTree(child, childLeftRuledLine, "├", "│", false, spaceNum)}\n${tree}`;
             }
 
             isFirstChild = false;
         }
 
-        tree = `${leftRuledLine}${myRuledLine} ${node.name}${tree == "" ? "" : "\n"}${tree}`;
+        if (isRoot) {
+            tree = `${node.name}${tree == "" ? "" : "\n"}${tree}`;
+        } else {
+            tree = `${leftRuledLine}${" ".repeat(spaceNum)}${myRuledLine} ${node.name}${tree == "" ? "" : "\n"}${tree}`;
+        }
 
         return tree;
     }
@@ -81,9 +86,9 @@ const TreeEditor: React.FC = () => {
     };
 
     const handleInputChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-        const value = e.target.value;
-        setInput(value);
-        setOutput(convertToTree(value));
+        const nextInput = e.target.value;
+        setInput(nextInput);
+        setOutput(convertToTree(nextInput, spaceNum));
     };
 
     const handleSelectAll = () => {
@@ -136,7 +141,7 @@ const TreeEditor: React.FC = () => {
                 textarea.selectionEnd = nextEndPosition;
             }, 0);
 
-            setOutput(convertToTree(nextValue));
+            setOutput(convertToTree(nextValue, spaceNum));
         } else {
             const textarea = e.target as HTMLTextAreaElement;
             const startPosition = textarea.selectionStart;
@@ -177,7 +182,7 @@ const TreeEditor: React.FC = () => {
                 textarea.selectionEnd = nextEndPosition;
             }, 0);
 
-            setOutput(convertToTree(nextValue));
+            setOutput(convertToTree(nextValue, spaceNum));
         }
     };
 
@@ -204,9 +209,30 @@ const TreeEditor: React.FC = () => {
         setTimeout(() => setCopyStatus(""), 3000);
     };
 
+    const handleSpaceChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const nextSpaceNum = Number(e.target.value);
+        if (nextSpaceNum > 0) {
+            setSpaceNum(nextSpaceNum);
+            setOutput(convertToTree(input, nextSpaceNum));
+        }
+    };
+
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl font-bold mb-6 text-center">Tree Editor</h2>
+            <div>
+                <label htmlFor="space" className="block text-sm font-medium text-gray-700 mb-1">
+                    スペース数
+                </label>
+                <input
+                    id="space"
+                    type="number"
+                    min="1"
+                    value={spaceNum}
+                    onChange={handleSpaceChange}
+                    className="w-14 p-2 mb-4 border rounded"
+                />
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                 <div>
                     <label htmlFor="input" className="block text-sm font-medium text-gray-700 mt-1 mb-3">
@@ -217,7 +243,7 @@ const TreeEditor: React.FC = () => {
                         value={input}
                         onChange={handleInputChange}
                         onKeyDown={handleKeyDown}
-                        placeholder="Enter tab-separated data (e.g., parent\n\tchild\n\t\tgrandchild)"
+                        placeholder="Enter tab-indexed data (e.g., parent\n\tchild\n\t\tgrandchild)"
                         className="w-full h-160 p-3 font-mono text-sm border rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
                 </div>
@@ -248,7 +274,7 @@ const TreeEditor: React.FC = () => {
                         ref={outputRef}
                         value={output}
                         readOnly
-                        placeholder="Markdown table will appear here"
+                        placeholder="Tree will appear here"
                         className="w-full h-160 p-3 font-mono text-sm border rounded-md bg-gray-100 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 resize-y"
                     />
                     {copyStatus && (
