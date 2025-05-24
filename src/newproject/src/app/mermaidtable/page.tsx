@@ -42,7 +42,7 @@ const TabToMarkdownTable: React.FC = () => {
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-        if (e.key === "Tab") {
+        if (e.key !== "Tab") {
             return;
         }
 
