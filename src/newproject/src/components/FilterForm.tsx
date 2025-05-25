@@ -27,7 +27,7 @@ const FilterForm: React.FC<Props> = ({ currentFilters }) => {
     const handleFilterChange = () => {
         const params = new URLSearchParams();
 
-        if (visibilities.length > 0) {
+        if (visibilities.length > 0 && visibilities.length < visibilityOptions.length) {
             params.set("visibilities", visibilities.join(","));
         }
 
@@ -39,7 +39,10 @@ const FilterForm: React.FC<Props> = ({ currentFilters }) => {
             params.set("author", author);
         }
 
-        params.set("onlyMyArticles", onlyMyArticles.toString());
+        if (onlyMyArticles) {
+            params.set("onlyMyArticles", onlyMyArticles.toString());
+        }
+
         router.push(`/articles?${params.toString()}`);
     };
 
