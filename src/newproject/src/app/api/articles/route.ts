@@ -14,29 +14,29 @@ export async function GET(req: NextRequest) {
     const userLogger = logger.child({ userId, method: req.method, url: req.url });
 
     if (slug) {
-        // 単一の記事を取得
+        // 単一のドキュメントを取得
         try {
             const article = await prisma.article.findUnique({ where: { slug }});
 
             if (!article) {
-                logger.warn({ slug }, "対象記事なし");
+                logger.warn({ slug }, "対象ドキュメントなし");
                 return NextResponse.json({ error: "Article not found" }, { status: 404 });
             }
 
             if (article.visibility !== "PUBLIC" && !isAuthorOrAdmin(article.authorId, session)) {
-                logger.warn({ slug }, "記事の閲覧権限なし");
+                logger.warn({ slug }, "アクセス権限なし");
                 return NextResponse.json({ error: "Forbidden" }, { status: 403 });
             }
 
-            userLogger.info({ slug }, "記事取得成功");
+            userLogger.info({ slug }, "ドキュメント取得成功");
             return NextResponse.json(article, { status: 200 });
         } catch (error) {
-            userLogger.error({ error, slug }, "記事取得失敗");
+            userLogger.error({ error, slug }, "ドキュメント取得失敗");
             return NextResponse.json({ error: "Failed to fetch article"}, { status: 500 });
         }
     }
 
-    // 記事一覧を取得
+    // ドキュメント一覧を取得
     const whereClause: { OR: Prisma.ArticleWhereInput[] } = {
         OR: [{ visibility: "PUBLIC" }],
     };
@@ -47,10 +47,10 @@ export async function GET(req: NextRequest) {
 
     try {
         const articles = await prisma.article.findMany({ where: whereClause });
-        userLogger.info({ articleCount: articles.length }, "記事一覧を取得");
+        userLogger.info({ articleCount: articles.length }, "ドキュメント一覧を取得");
         return NextResponse.json(articles);
     } catch (error) {
-        userLogger.error({ error }, "記事一覧の取得失敗");
+        userLogger.error({ error }, "ドキュメント一覧の取得失敗");
         return NextResponse.json({ error: "Failed to fetch articles" }, { status: 500 });
     }
 }
@@ -69,7 +69,7 @@ export async function POST(req: NextRequest) {
         const { title, slug, description, visibility, authorId } = await req.json();
 
         if (!isAuthorOrAdmin(authorId, session)) {
-            userLogger.warn({}, "記事作成権限なし");
+            userLogger.warn({}, "アクセス権限なし");
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
@@ -83,10 +83,10 @@ export async function POST(req: NextRequest) {
             },
         });
 
-        userLogger.info({ slug }, "記事作成成功");
+        userLogger.info({ slug }, "ドキュメント作成成功");
         return NextResponse.json(article, { status: 201 });
     } catch (error) {
-        userLogger.error({ error }, "記事作成失敗");
+        userLogger.error({ error }, "ドキュメント作成失敗");
         return NextResponse.json({ error: "Failed to create article" }, { status: 500 });
     }
 }
@@ -106,12 +106,12 @@ export async function PUT(req: NextRequest) {
         const article = await prisma.article.findUnique({ where: { slug: originalSlug }});
 
         if (!article) {
-            userLogger.warn({ originalSlug }, "対象記事なし");
+            userLogger.warn({ originalSlug }, "対象ドキュメントなし");
             return NextResponse.json({ error: "Article not found" }, { status: 404 });
         }
 
         if (!isAuthorOrAdmin(article.authorId, session)) {
-            userLogger.warn({ originalSlug }, "記事更新権限なし");
+            userLogger.warn({ originalSlug }, "アクセス権限なし");
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
@@ -134,10 +134,10 @@ export async function PUT(req: NextRequest) {
             },
         });
 
-        userLogger.info({ slug }, "記事更新成功");
+        userLogger.info({ slug }, "ドキュメント更新成功");
         return NextResponse.json(updatedArticle, { status: 200 });
     } catch (error) {
-        userLogger.error({ error }, "記事更新失敗");
+        userLogger.error({ error }, "ドキュメント更新失敗");
         return NextResponse.json({ error: "Failed to update article" }, { status: 500 });
     }
 }

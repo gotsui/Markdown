@@ -58,12 +58,12 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     });
 
     if (!article) {
-        userLogger.warn({ slug }, "対象記事なし");
+        userLogger.warn({ slug }, "対象ドキュメントなし");
         notFound();
     }
 
     if (article.visibility !== "PUBLIC" && !isAuthorOrAdmin(article.authorId, session)) {
-        userLogger.warn({ slug }, "対象記事閲覧権限なし");
+        userLogger.warn({ slug }, "対象ドキュメント閲覧権限なし");
         notFound();
     }
 
@@ -72,7 +72,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     try {
         content = await readMarkdown(slug);
     } catch (error) {
-        userLogger.error({ slug, error }, "対象記事取得失敗");
+        userLogger.error({ slug, error }, "対象ドキュメント取得失敗");
 
         return (
             <div className="container mx-auto p-4">

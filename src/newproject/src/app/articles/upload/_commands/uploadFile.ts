@@ -75,11 +75,11 @@ export async function uploadFile(formData: FormData) {
             },
         });
 
-        userLogger.info({ articleId: article.id, slug }, "記事をアップロード");
+        userLogger.info({ articleId: article.id, slug }, "ドキュメントをアップロード");
         revalidatePath("/articles");
         return { success: true, article };
     } catch (error) {
-        userLogger.error({ error, slug }, "記事アップロードに失敗");
+        userLogger.error({ error, slug }, "ドキュメントアップロードに失敗");
         return { error: "アップロードに失敗しました" };
     }
 }

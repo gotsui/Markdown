@@ -28,20 +28,20 @@ export async function GET(req: NextRequest) {
         const article = await prisma.article.findUnique({ where: { slug }});
 
         if (!article) {
-            userLogger.warn({ slug }, "対象記事なし");
+            userLogger.warn({ slug }, "対象ドキュメントなし");
             return NextResponse.json({ error: 'Article not found' }, { status: 404 });
         }
 
         if (!isAuthorOrAdmin(article.authorId, session)) {
-            userLogger.warn({ slug }, "対象記事の閲覧権限なし");
+            userLogger.warn({ slug }, "アクセス権限なし");
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
         const content = await readMarkdown(slug);
-        userLogger.info({ slug }, "記事取得成功");
+        userLogger.info({ slug }, "ドキュメント取得成功");
         return NextResponse.json({ content }, { status: 200 });
     } catch (error) {
-        userLogger.error({ error }, "記事取得失敗");
+        userLogger.error({ error }, "ドキュメント取得失敗");
         return NextResponse.json({ error: "Failed to read markdown" }, { status: 500 });
     }
 }
@@ -61,20 +61,20 @@ export async function POST(req: NextRequest) {
         const article = await prisma.article.findUnique({ where: { slug }});
 
         if (!article) {
-            userLogger.warn({ slug }, "対象記事なし");
+            userLogger.warn({ slug }, "対象ドキュメントなし");
             return NextResponse.json({ error: 'Article not found' }, { status: 404 });
         }
 
         if (!isAuthorOrAdmin(article.authorId, session)) {
-            userLogger.warn({ slug }, "対象記事の権限なし");
+            userLogger.warn({ slug }, "アクセス権限なし");
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
         await saveMarkdown(slug, content);
-        userLogger.info({ slug }, "記事保存成功");
+        userLogger.info({ slug }, "ドキュメント保存成功");
         return NextResponse.json({ message: "Markdown saved" }, { status: 200 });
     } catch (error) {
-        userLogger.error({ error }, "記事保存失敗");
+        userLogger.error({ error }, "ドキュメント保存失敗");
         return NextResponse.json({ error: "Failed to save markdown" }, { status: 500 });
     }
 }

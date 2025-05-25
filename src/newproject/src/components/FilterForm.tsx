@@ -91,7 +91,7 @@ const FilterForm: React.FC<Props> = ({ currentFilters }) => {
                             onChange={(e) => setOnlyMyArticles(e.target.checked)}
                             className="mr-2"
                         />
-                        自分の記事のみ表示
+                        自分のドキュメントのみ表示
                     </label>
                 </div>
                 <button

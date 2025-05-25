@@ -25,8 +25,8 @@ export async function GET(req: NextRequest) {
         });
 
         if (!article) {
-            userLogger.warn({ slug }, "記事なし");
-            return NextResponse.json({ error: "記事が見つかりません" }, { status: 404 });
+            userLogger.warn({ slug }, "ドキュメントなし");
+            return NextResponse.json({ error: "ドキュメントが見つかりません" }, { status: 404 });
         }
 
         if (!isAuthorOrAdmin(article.authorId, session)) {
@@ -37,7 +37,7 @@ export async function GET(req: NextRequest) {
         const filePath = join(process.cwd(), "articles", `${article.slug}.md`);
         const fileContent = await fs.readFile(filePath);
 
-        logger.info({ slug }, "記事ダウンロード");
+        logger.info({ slug }, "ドキュメントダウンロード");
         return new NextResponse( fileContent, {
             status: 200,
             headers: {
@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
             },
         });
     } catch (error) {
-        logger.error({ error, slug }, "記事ダウンロード失敗");
+        logger.error({ error, slug }, "ドキュメントダウンロード失敗");
         return NextResponse.json({ error: "サーバエラーが発生しました" }, { status: 500 });
     }
 }
