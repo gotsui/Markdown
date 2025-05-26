@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { sortBy } from "lodash";
 
 type Props = {
     currentFilters: ArticleFilter;
@@ -13,12 +14,25 @@ const visibilityOptions: { value: Visibility; label: string }[] = [
     { value: "DRAFT", label: "下書き" },
 ];
 
+const sortOptions: { value: SortBy; label: string }[] = [
+    { value: "createdAt", label: "作成日" },
+    { value: "updatedAt", label: "更新日" },
+    { value: "title", label: "タイトル" },
+];
+
+const orderOptions: { value: SortOrder; label: string }[] = [
+    { value: "asc", label: "昇順" },
+    { value: "desc", label: "降順" },
+];
+
 const FilterForm: React.FC<Props> = ({ currentFilters }) => {
     const router = useRouter();
     const [visibilities, setVisibilities] = useState<Visibility[]>(currentFilters.visibilities || visibilityOptions.map((v) => v.value));
     const [search, setSearch] = useState(currentFilters.search || "");
     const [author, setAuthor] = useState(currentFilters.author || "");
     const [onlyMyArticles, setOnlyMyArticles] = useState(currentFilters.onlyMyArticles || false);
+    const [sortBy, setSortBy] = useState<SortBy>(currentFilters.sortBy || "createdAt");
+    const [sortOrder, setSortOrder] = useState<SortOrder>(currentFilters.sortOrder || "desc");
 
     const handleVisibilityChange = (value: Visibility, checked: boolean) => {
         setVisibilities((prev) => checked ? [...prev, value] : prev.filter((v) => v !== value));
@@ -29,18 +43,38 @@ const FilterForm: React.FC<Props> = ({ currentFilters }) => {
 
         if (visibilities.length > 0 && visibilities.length < visibilityOptions.length) {
             params.set("visibilities", visibilities.join(","));
+        } else {
+            params.delete("visibilities");
         }
 
         if (search) {
             params.set("search", search);
+        } else {
+            params.delete("search");
         }
 
         if (author) {
             params.set("author", author);
+        } else {
+            params.delete("author");
         }
 
         if (onlyMyArticles) {
             params.set("onlyMyArticles", onlyMyArticles.toString());
+        } else {
+            params.delete("onlyMyArticles");
+        }
+
+        if (sortBy !== "createdAt") {
+            params.set("sortBy", sortBy);
+        } else {
+            params.delete("sortBy");
+        }
+
+        if (sortOrder !== "desc") {
+            params.set("sortOrder", sortOrder);
+        } else {
+            params.delete("sortOrder");
         }
 
         router.push(`/articles?${params.toString()}`);
@@ -97,9 +131,36 @@ const FilterForm: React.FC<Props> = ({ currentFilters }) => {
                         自分のドキュメントのみ表示
                     </label>
                 </div>
+                <div>
+                    <label className="block text-sm font-medium mb-1">並べ替え</label>
+                    <div className="flex gap-4">
+                        <select
+                            value={sortBy}
+                            onChange={(e) => setSortBy(e.target.value as SortBy)}
+                            className="p-2 border rounded"
+                        >
+                            {sortOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                        <select
+                            value={sortOrder}
+                            onChange={(e) => setSortOrder(e.target.value as SortOrder)}
+                            className="p-2 border rounded"
+                        >
+                            {orderOptions.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                    {option.label}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
                 <button
                     onClick={handleFilterChange}
-                    className="bg-blue-500 text-white px-4 py-2 rounded mt-4"
+                    className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                 >
                     適用
                 </button>

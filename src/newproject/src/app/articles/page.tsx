@@ -7,15 +7,20 @@ import { Prisma } from "@prisma/client";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
 import FilterForm from "@/components/FilterForm";
+import { sortBy } from "lodash";
 
 const getFiltersFromSearchParams = (searchParams: { [key: string]: string | undefined }): ArticleFilter => {
     const visibilities = searchParams.visibilities?.split(",") as Visibility[] | undefined;
+    const sortBy = searchParams.sortBy as SortBy | undefined;
+    const sortOrder = searchParams.sortOrder as SortOrder | undefined;
 
     return {
         visibilities: visibilities?.filter((v) => ["PUBLIC", "PRIVATE", "DRAFT"].includes(v)),
         search: searchParams.search || undefined,
         author: searchParams.author || undefined,
         onlyMyArticles: searchParams.onlyMyArticles === "true",
+        sortBy: sortBy && ["createdAt", "updatedAt", "title"].includes(sortBy) ? sortBy : "createdAt",
+        sortOrder: sortOrder && ["asc", "desc"].includes(sortOrder) ? sortOrder : "desc",
     };
 };
 
@@ -79,7 +84,7 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
     const articles = await prisma.article.findMany({
         where,
         include: { author: true },
-        orderBy: { createdAt: "desc" },
+        orderBy: { [filters.sortBy!]: filters.sortOrder },
     });
 
     return (

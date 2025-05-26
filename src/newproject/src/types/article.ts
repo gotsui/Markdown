@@ -1,4 +1,6 @@
 type Visibility = "PUBLIC" | "PRIVATE" | "DRAFT";
+type SortBy = "createdAt" | "updatedAt" | "title";
+type SortOrder = "asc" | "desc";
 
 type Article = {
     id: string;
@@ -17,4 +19,6 @@ type ArticleFilter = {
     search?: string;
     author?: string;
     onlyMyArticles?: boolean;
+    sortBy?: SortBy;
+    sortOrder?: SortOrder;
 };
