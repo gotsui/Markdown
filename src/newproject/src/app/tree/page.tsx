@@ -40,7 +40,7 @@ const TreeEditor: React.FC = () => {
 
         for (const child of node.children.reverse()) {
             if (isFirstChild) {
-                tree = writeTree(child, childLeftRuledLine, "└", "", false, spaceNum);
+                tree = writeTree(child, childLeftRuledLine, "└", " ", false, spaceNum);
             } else {
                 tree = `${writeTree(child, childLeftRuledLine, "├", "│", false, spaceNum)}\n${tree}`;
             }
