@@ -77,12 +77,12 @@ const FilterForm: React.FC<Props> = ({ currentFilters }) => {
                     />
                 </div>
                 <div>
-                    <label className="block text-sm font-medium mb-1">著者名</label>
+                    <label className="block text-sm font-medium mb-1">作成者</label>
                     <input
                         type="text"
                         value={author}
                         onChange={(e) => setAuthor(e.target.value)}
-                        placeholder="著者名を入力"
+                        placeholder="作成者を入力"
                         className="p-2 border rounded w-full"
                     />
                 </div>
