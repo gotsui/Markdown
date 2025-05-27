@@ -15,6 +15,7 @@ services:
       - app_network
     tty: true
     stdin_open: true
+    working_dir: /home/node/src/newproject
     depends_on:
       - db
   db:
