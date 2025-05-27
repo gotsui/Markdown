@@ -117,6 +117,10 @@ const EditArticle: React.FC<Props> = ({ params }) => {
             setIsSaving(false);
             setSuccessMessage("保存しました");
 
+            setTimeout(() => {
+                setSuccessMessage(null);
+            }, 3000);
+
             if (!stayOnPage) {
                 router.push(`/articles/${slug}`);
             }
