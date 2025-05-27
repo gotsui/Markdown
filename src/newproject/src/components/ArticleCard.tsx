@@ -22,8 +22,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, session }) => {
                 <p className="text-sm text-gray-500">作成者: {article.author.name || "匿名"}</p>
                 <p className="text-sm text-gray-500">お気に入り数: {article._count?.favorites || 0}</p>
             </div>
-            <div className="flex flex-col items-end justify-between">
-                <EditButton slug={article.slug} authorId={article.authorId} session={session} />
+            <div className="flex items-end">
                 <FavoriteButton articleId={article.id} isInitialFavorited={article.isFavorited || false} />
             </div>
         </div>
