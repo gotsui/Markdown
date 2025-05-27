@@ -2,17 +2,10 @@ import { Session } from "next-auth";
 import Link from "next/link";
 import React from "react";
 import EditButton from "./EditButton";
+import FavoriteButton from "./FavoriteButton";
 
 type ArticleCardProps = {
-    article: {
-        id: string;
-        title: string;
-        slug: string;
-        description?: string;
-        visibility: "PUBLIC" | "PRIVATE" | "DRAFT";
-        authorId: string;
-        createdAt: string;
-    };
+    article: Article;
     session: Session | null;
 };
 
@@ -24,11 +17,14 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article, session }) => {
                     <Link href={`/articles/${article.slug}`}>{article.title}</Link>
                 </h2>
                 {article.description && <p className="text-gray-600">{article.description}</p>}
-                <p className="text-sm text-gray-500">Created: {new Date(article.createdAt).toLocaleDateString()}</p>
-                <p className="text-sm text-gray-500">Visibility: {article.visibility}</p>
+                <p className="text-sm text-gray-500">作成日: {new Date(article.createdAt).toLocaleDateString("ja-JP")}</p>
+                <p className="text-sm text-gray-500">公開範囲: {article.visibility}</p>
+                <p className="text-sm text-gray-500">作成者: {article.author.name || "匿名"}</p>
+                <p className="text-sm text-gray-500">お気に入り数: {article._count?.favorites || 0}</p>
             </div>
-            <div className="flex items-end">
+            <div className="flex flex-col items-end justify-between">
                 <EditButton slug={article.slug} authorId={article.authorId} session={session} />
+                <FavoriteButton articleId={article.id} isInitialFavorited={article.isFavorited || false} />
             </div>
         </div>
     );

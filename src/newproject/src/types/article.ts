@@ -12,6 +12,8 @@ type Article = {
     author: User;
     createdAt: string;
     updatedAt: string;
+    _count?: { favorites: number };
+    isFavorited?: boolean;
 };
 
 type ArticleFilter = {
@@ -19,6 +21,7 @@ type ArticleFilter = {
     search?: string;
     author?: string;
     onlyMyArticles?: boolean;
+    onlyFavorites?: boolean;
     sortBy?: SortBy;
     sortOrder?: SortOrder;
 };

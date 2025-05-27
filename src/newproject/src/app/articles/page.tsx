@@ -7,18 +7,19 @@ import { Prisma } from "@prisma/client";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
 import FilterForm from "@/components/FilterForm";
-import { sortBy } from "lodash";
 
-const getFiltersFromSearchParams = (searchParams: { [key: string]: string | undefined }): ArticleFilter => {
-    const visibilities = searchParams.visibilities?.split(",") as Visibility[] | undefined;
-    const sortBy = searchParams.sortBy as SortBy | undefined;
-    const sortOrder = searchParams.sortOrder as SortOrder | undefined;
+const getFiltersFromSearchParams = async (searchParams: { [key: string]: string | undefined }): Promise<ArticleFilter> => {
+    const params = await searchParams;
+    const visibilities = params.visibilities?.split(",") as Visibility[] | undefined;
+    const sortBy = params.sortBy as SortBy | undefined;
+    const sortOrder = params.sortOrder as SortOrder | undefined;
 
     return {
         visibilities: visibilities?.filter((v) => ["PUBLIC", "PRIVATE", "DRAFT"].includes(v)),
-        search: searchParams.search || undefined,
-        author: searchParams.author || undefined,
-        onlyMyArticles: searchParams.onlyMyArticles === "true",
+        search: params.search || undefined,
+        author: params.author || undefined,
+        onlyMyArticles: params.onlyMyArticles === "true",
+        onlyFavorites: params.onlyFavorites === "true",
         sortBy: sortBy && ["createdAt", "updatedAt", "title"].includes(sortBy) ? sortBy : "createdAt",
         sortOrder: sortOrder && ["asc", "desc"].includes(sortOrder) ? sortOrder : "desc",
     };
@@ -33,7 +34,7 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
     userLogger.info({});
 
     const userRole = session?.user?.role ?? null;
-    const filters = getFiltersFromSearchParams(searchParams);
+    const filters = await getFiltersFromSearchParams(searchParams);
     const where: Prisma.ArticleWhereInput = {};
     where.AND = [];
 
@@ -81,22 +82,44 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         }
     }
 
+    if (filters.onlyFavorites) {
+        where.favorites = { some: { userId } };
+    }
+
+    const include: Prisma.ArticleInclude = {
+        author: true,
+        _count: { select: { favorites: true } }, 
+    };
+
+    if (userId) {
+        include.favorites = { where: { userId } };
+    }
+
     const articles = await prisma.article.findMany({
         where,
-        include: { author: true },
+        include,
         orderBy: { [filters.sortBy!]: filters.sortOrder },
     });
+
+    // お気に入り判定値追加
+    const articlesWithFavoriteStatus = articles.map((article) => ({
+        ...article,
+        isFavorited: article.favorites ? article.favorites.length > 0 : false,
+    }));
 
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">ドキュメント一覧</h1>
-            <FilterForm currentFilters={filters} />
-            <div className="grid gap-4">
-                {articles.length === 0 && <p>ドキュメントがありません。</p>}
-                {articles.map((article: any) => (
-                    <ArticleCard key={article.id} article={article} session={session} />
-                ))}
-            </div>
+            <FilterForm isSignedIn={userId !== null} currentFilters={filters} />
+            {articlesWithFavoriteStatus.length === 0 ? (
+                <p>ドキュメントがありません。</p>
+            ) : (
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {articlesWithFavoriteStatus.map((article: any) => (
+                        <ArticleCard key={article.id} article={article} session={session} />
+                    ))}
+                </div>
+            )}
         </div>
     );
 };
