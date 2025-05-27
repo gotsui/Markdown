@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 
 type Props = {
@@ -18,7 +18,10 @@ const FavoriteButton: React.FC<Props> = ({ articleId, isInitialFavorited }) => {
         setIsFavorited(isInitialFavorited);
     }, [isInitialFavorited]);
 
-    const toggleFavorite = async () => {
+    const toggleFavorite = async (e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+
         if (status !== "authenticated") {
             alert("お気に入り機能を使用するにはログインしてください");
             return;
