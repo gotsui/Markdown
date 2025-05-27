@@ -36,6 +36,11 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ markdown }) => {
             const idCounter: { [key: string]: number} = {};
 
             visit(tree, "heading", (node: any) => {
+                // 目次は3階層まで
+                if (node.depth > 3) {
+                    return;
+                }
+
                 const text: string = toString(node);
 
                 if (text.trim()) {

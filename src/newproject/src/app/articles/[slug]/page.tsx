@@ -142,21 +142,22 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                             const id = generateUniqueId(text, idCounter);
                             return <h3 id={encodeURIComponent(id)} {...props}>{children}</h3>;
                         },
-                        h4({ node, children, ...props }) {
-                            const text = toString(node) || '';
-                            const id = generateUniqueId(text, idCounter);
-                            return <h4 id={encodeURIComponent(id)} {...props}>{children}</h4>;
-                        },
-                        h5({ node, children, ...props }) {
-                            const text = toString(node) || '';
-                            const id = generateUniqueId(text, idCounter);
-                            return <h5 id={encodeURIComponent(id)} {...props}>{children}</h5>;
-                        },
-                        h6({ node, children, ...props }) {
-                            const text = toString(node) || '';
-                            const id = generateUniqueId(text, idCounter);
-                            return <h6 id={encodeURIComponent(id)} {...props}>{children}</h6>;
-                        },
+                        // 目次は3階層まで
+                        // h4({ node, children, ...props }) {
+                        //     const text = toString(node) || '';
+                        //     const id = generateUniqueId(text, idCounter);
+                        //     return <h4 id={encodeURIComponent(id)} {...props}>{children}</h4>;
+                        // },
+                        // h5({ node, children, ...props }) {
+                        //     const text = toString(node) || '';
+                        //     const id = generateUniqueId(text, idCounter);
+                        //     return <h5 id={encodeURIComponent(id)} {...props}>{children}</h5>;
+                        // },
+                        // h6({ node, children, ...props }) {
+                        //     const text = toString(node) || '';
+                        //     const id = generateUniqueId(text, idCounter);
+                        //     return <h6 id={encodeURIComponent(id)} {...props}>{children}</h6>;
+                        // },
                     }}
                 >
                     {content}
