@@ -22,7 +22,11 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
                     作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}
                 </p>
                 <p className="text-sm text-gray-700">
-                    お気に入り数：{article._count?.favorites || 0}
+                    お気に入り数：
+                    <span className={`mx-1 ${article.isFavorited ? "text-red-500" : "text-gray-500"}`}>
+                        {article.isFavorited ? "♥" : "♡"}
+                    </span>
+                    {article._count?.favorites || 0}
                 </p>
             </div>
         </Link>
