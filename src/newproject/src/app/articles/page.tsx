@@ -82,7 +82,7 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         }
     }
 
-    if (filters.onlyFavorites) {
+    if (filters.onlyFavorites && userId) {
         where.favorites = { some: { userId } };
     }
 
