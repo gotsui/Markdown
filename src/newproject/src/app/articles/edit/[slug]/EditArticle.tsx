@@ -17,7 +17,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     const [slug, setSlug] = useState(params.slug);
     const [description, setDescription] = useState("");
     const [content, setContent] = useState("");
-    const [visibility, setVisibility] = useState<"PUBLIC" | "PRIVATE" | "DRAFT">("PUBLIC");
+    const [visibility, setVisibility] = useState<Visibility>("PUBLIC");
     const [isLoading, setIsLoading] = useState(true);
     const [stayOnPage, setStayOnPage] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -89,6 +89,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                     originalSlug: params.slug,
                     title,
                     slug,
+                    description,
                     visibility,
                 }),
             });

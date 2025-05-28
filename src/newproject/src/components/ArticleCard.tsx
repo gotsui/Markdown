@@ -1,31 +1,29 @@
-import { Session } from "next-auth";
 import Link from "next/link";
 import React from "react";
-import EditButton from "./EditButton";
-import FavoriteButton from "./FavoriteButton";
 
 type ArticleCardProps = {
     article: Article;
-    session: Session | null;
 };
 
-const ArticleCard: React.FC<ArticleCardProps> = ({ article, session }) => {
+const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     return (
-        <Link href={`/articles/${article.slug}`}>
-            <div className="border px-4 pt-3 pb-4 rounded-lg shadow-md flex justify-between">
-                <div>
-                    <h2 className="text-xl font-bold">
-                        {article.title}
-                    </h2>
-                    {article.description && <p className="text-gray-600">{article.description}</p>}
-                    <p className="text-sm text-gray-500">作成日: {new Date(article.createdAt).toLocaleDateString("ja-JP")}</p>
-                    <p className="text-sm text-gray-500">公開範囲: {article.visibility}</p>
-                    <p className="text-sm text-gray-500">作成者: {article.author.name || "匿名"}</p>
-                    <p className="text-sm text-gray-500">お気に入り数: {article._count?.favorites || 0}</p>
-                </div>
-                <div className="flex items-end">
-                    <FavoriteButton articleId={article.id} isInitialFavorited={article.isFavorited || false} />
-                </div>
+        <Link
+            href={`/articles/${article.slug}`}
+            className="p-4 border rounded-lg shadow-md hover:bg-gray-100 overflow-hidden"
+        >
+            <div>
+                <h2 className="text-xl font-semibold truncate" title={article.title}>
+                    {article.title}
+                </h2>
+                <p className="text-sm text-gray-700 mt-1">
+                    作成者：{article.author.name || "匿名"}
+                </p>
+                <p className="text-sm text-gray-500">
+                    作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}
+                </p>
+                <p className="text-sm text-gray-700">
+                    お気に入り数：{article._count?.favorites || 0}
+                </p>
             </div>
         </Link>
     );

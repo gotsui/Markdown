@@ -101,22 +101,16 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         orderBy: { [filters.sortBy!]: filters.sortOrder },
     });
 
-    // お気に入り判定値追加
-    const articlesWithFavoriteStatus = articles.map((article) => ({
-        ...article,
-        isFavorited: article.favorites ? article.favorites.length > 0 : false,
-    }));
-
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">ドキュメント一覧</h1>
             <FilterForm isSignedIn={userId !== null} currentFilters={filters} />
-            {articlesWithFavoriteStatus.length === 0 ? (
+            {articles.length === 0 ? (
                 <p>ドキュメントがありません。</p>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {articlesWithFavoriteStatus.map((article: any) => (
-                        <ArticleCard key={article.id} article={article} session={session} />
+                    {articles.map((article: any) => (
+                        <ArticleCard key={article.id} article={article} />
                     ))}
                 </div>
             )}

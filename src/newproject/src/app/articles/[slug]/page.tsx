@@ -17,14 +17,11 @@ import { toString } from "mdast-util-to-string";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
 import ArticleDownloadButton from "@/components/ArticleDownloadButton";
+import FavoriteButton from "@/components/FavoriteButton";
 
 type Props = {
     params: Promise<{ slug: string }>;
 };
-
-type ArticleWithAuthor = Prisma.ArticleGetPayload<{
-    include: { author: true };
-}>;
 
 const generateUniqueId = (text: string, idCounter: { [key: string]: number }) => {
     let id = text;
@@ -48,13 +45,20 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     const userLogger = logger.child({ userId, url: requestUrl, event: "ArticlePage" });
     userLogger.info({});
 
-    const article: ArticleWithAuthor | null = await prisma.article.findUnique({
+    const include: Prisma.ArticleInclude = {
+        author: true,
+        _count: { select: { favorites: true } },
+    };
+
+    if (userId) {
+        include.favorites = { where: { userId } };
+    }
+
+    const article = await prisma.article.findUnique({
         where: {
             slug: slug,
         },
-        include: {
-            author: true,
-        },
+        include,
     });
 
     if (!article) {
@@ -77,7 +81,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
         return (
             <div className="container mx-auto p-4">
                 <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
-                <p className="text-red-500">Failed to load article content.</p>
+                <p className="text-red-500">ドキュメントの読み込みに失敗しました</p>
             </div>
         );
     }
@@ -88,12 +92,16 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
             <p className="text-gray-600 mb-4">{article.description || "説明なし"}</p>
-            <p className="text-sm text-gray-500 mb-4">
-                作成者: {article.author.name || "匿名"} | 公開状態: {article.visibility}
-            </p>
+            <div className="text-sm text-gray-600 mb-4">
+                <p>作成者：{article.author.name || "匿名"}</p>
+                <p>作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}</p>
+                <p>お気に入り数：{article._count?.favorites || 0}</p>
+                <p>公開状態：{article.visibility}</p>
+            </div>
             <div className="flex space-x-4 mb-4">
                 <EditButton slug={slug} authorId={article.authorId} session={session} />
                 <ArticleDownloadButton slug={slug} />
+                <FavoriteButton articleId={article.id} isInitialFavorited={article.favorites ? article.favorites.length > 0 : false} />
             </div>
             <TableOfContents markdown={content} />
             <div className="prose max-w-none">

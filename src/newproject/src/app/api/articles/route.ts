@@ -102,7 +102,7 @@ export async function PUT(req: NextRequest) {
     }
 
     try {
-        const { originalSlug, title, slug, visibility } = await req.json();
+        const { originalSlug, title, slug, description, visibility } = await req.json();
         const article = await prisma.article.findUnique({ where: { slug: originalSlug }});
 
         if (!article) {
@@ -129,6 +129,7 @@ export async function PUT(req: NextRequest) {
             data: {
                 title,
                 slug,
+                description,
                 visibility,
                 updatedAt: new Date(),
             },
