@@ -16,6 +16,7 @@ services:
     tty: true
     stdin_open: true
     working_dir: /home/node/src/newproject
+    command: npm run dev
     depends_on:
       - db
   db:
