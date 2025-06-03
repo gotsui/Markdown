@@ -85,7 +85,7 @@ export const useProcessMarkdown = (markdown: string) => {
                     .use(remarkRehype)
                     .use(rehypeMermaid)
                     .use(rehypePrettyCode)
-                    .use(rehypeStringify)
+                    .use(rehypeStringify, { closeEmptyElements: true })
                     .process(markdown);
 
                 setProcessedContent(String(file));
