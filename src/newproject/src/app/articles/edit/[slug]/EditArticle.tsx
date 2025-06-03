@@ -132,7 +132,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
 
     return (
         <div className="container mx-auto p-4">
-            <details className="border rounded-lg p-4 mb-2" open>
+            <details className="border rounded-lg p-4 mb-2">
                 <summary className="cursor-pointer font-semibold text-lg flex items-center">
                     <span className="mr-2">メタデータ</span>
                     <svg

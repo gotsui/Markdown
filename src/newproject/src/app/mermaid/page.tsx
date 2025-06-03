@@ -2,9 +2,9 @@ import { SplitLayout } from "./SplitLayout";
 
 const Home = () => {
     return (
-        <main className="h-screen">
+        <div className="h-[calc(100vh-128px)]">
             <SplitLayout />
-        </main>
+        </div>
     )
 };
 

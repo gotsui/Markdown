@@ -13,7 +13,7 @@ export const SplitLayout: React.FC = () => {
     }, []);
 
     return (
-        <div className="flex flex-col md:flex-row h-screen">
+        <div className="flex flex-col md:flex-row h-full">
             <div className="w-full md:w-1/2 border-r">
                 <Editor onChange={handleCodeChange} />
             </div>
