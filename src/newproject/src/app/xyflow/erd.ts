@@ -1,9 +1,9 @@
-export type ERNodeType = "entity" | "attribute" | "relationship";
+export type ERNodeType = "table";
 
 export type Column = {
     id: string;
     name: string;
-    dataType: string;
+    type: string;
     isPrimaryKey?: boolean;
     isForeignKey?: boolean;
 };

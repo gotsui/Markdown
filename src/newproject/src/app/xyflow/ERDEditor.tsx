@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     ReactFlow,
     useNodesState,
@@ -12,29 +12,75 @@ import {
     Connection,
 } from "@xyflow/react";
 import Sidebar from "./Sidebar";
-import CustomNode from "./CustomNode";
 import { ERNode, EREdge, ERNodeType } from "./erd";
 import { v4 as uuidv4 } from "uuid";
+import TableNode from "./TableNode";
 
 const nodeTypes = {
-    entity: CustomNode,
-    attribute: CustomNode,
-    relationship: CustomNode,
+    table: TableNode,
 };
 
 const ERDEditor: React.FC = () => {
     const reactFlowWrapper = useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState<ERNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<EREdge>([]);
+    const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
     const { screenToFlowPosition } = useReactFlow();
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await fetch("/api/erd");
+                const data = await response.json();
+
+                if (data.nodes && data.edges) {
+                    setNodes(data.nodes);
+                    setEdges(data.edges);
+                }
+            } catch (error) {
+                console.error("Error fetching ERD data:", error);
+            }
+        };
+
+        fetchData();
+    }, [setNodes, setEdges]);
+
+    const saveData = useCallback(async () => {
+        try {
+            const response = await fetch("/api/erd", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ nodes, edges }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to save data");
+            }
+
+            alert("Data saved successfully");
+        } catch (error) {
+            console.error("Error saving ERD data:", error);
+            alert("Failed to save data");
+        }
+    }, [nodes, edges]);
 
     const onConnect = useCallback((params: Connection) => {
         setEdges((eds) => addEdge({
             ...params,
-            id: `edge-${params.source}-${params.target}-${params.sourceHandle}-${params.targetHandle}`,
-            label: "related",
+            id: `edge-${params.sourceHandle}-${params.targetHandle}`,
+            sourceHandle: params.sourceHandle,
+            targetHandle: params.targetHandle,
+            label: "1:N",
         }, eds));
     }, [setEdges]);
+
+    const onNodeClick = useCallback((e: React.MouseEvent, node: ERNode) => {
+        setSelectedNodeId(node.id);
+    }, []);
+
+    const onPaneClick = useCallback(() => {
+        setSelectedNodeId(null);
+    }, []);
 
     const onDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault();
@@ -45,7 +91,7 @@ const ERDEditor: React.FC = () => {
         e.preventDefault();
         const type = e.dataTransfer.getData("application/reactflow") as ERNodeType;
 
-        if (!type) {
+        if (type !== "table") {
             return;
         }
 
@@ -55,40 +101,26 @@ const ERDEditor: React.FC = () => {
         });
 
         const newNode: ERNode = {
-            id: `${type}-${uuidv4()}`,
+            id: `table-${uuidv4()}`,
             type,
             position,
-            data: {
-                label: `${type.charAt(0).toUpperCase() + type.slice(1)}`,
-                columns: type === "entity" ? [] : undefined,
-            },
+            data: { label: "New Table", columns: [] },
         };
 
         setNodes((nds) => nds.concat(newNode));
+        setSelectedNodeId(newNode.id);
     }, [screenToFlowPosition, setNodes]);
-
-    const onAddColumn = useCallback(
-        (nodeId: string, column: { name: string; dataType: string; isPrimaryKey?: boolean; isForeignKey?: boolean }) => {
-            setNodes((nds) =>
-                nds.map((node) =>
-                node.id === nodeId && node.type === "entity"
-                    ? {
-                        ...node,
-                        data: {
-                            ...node.data,
-                            columns: [...(node.data.columns || []), { ...column, id: uuidv4() }],
-                        },
-                    }
-                    : node
-                )
-            );
-        },
-        [setNodes]
-    );
 
     return (
         <div className="flex h-screen">
-            <Sidebar onAddColumn={onAddColumn} nodes={nodes} />
+            <Sidebar
+                nodes={nodes}
+                edges={edges}
+                setNodes={setNodes}
+                setEdges={setEdges}
+                selectedNodeId={selectedNodeId}
+                saveData={saveData}
+            />
             <div className="flex-1" ref={reactFlowWrapper}>
                 <ReactFlow
                     nodes={nodes}
@@ -96,6 +128,8 @@ const ERDEditor: React.FC = () => {
                     onNodesChange={onNodesChange}
                     onEdgesChange={onEdgesChange}
                     onConnect={onConnect}
+                    onNodeClick={onNodeClick}
+                    onPaneClick={onPaneClick}
                     onDrop={onDrop}
                     onDragOver={onDragOver}
                     nodeTypes={nodeTypes}
