@@ -13,7 +13,7 @@ export type ERNode = {
     type: ERNodeType;
     data: {
         label: string;
-        columns?: Column[];
+        columns: Column[];
     };
     position: { x: number; y: number; };
 };

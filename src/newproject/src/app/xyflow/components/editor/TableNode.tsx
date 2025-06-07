@@ -1,11 +1,11 @@
 import { Handle, Position, NodeProps, Node } from "@xyflow/react";
 import React, { useState } from "react";
-import { Column } from "./erd";
+import { Column } from "../../types/erd";
 
 type TableNode = Node<
     {
         label: string;
-        columns?: Column[];
+        columns: Column[];
     }
 >;
 
@@ -16,7 +16,7 @@ const TableNode: React.FC<NodeProps<TableNode>> = ({ id, data }) => {
                 {data.label || "Unnamed Table"}
             </div>
             <div className="space-y-2">
-                {data.columns && data.columns.map((column) => (
+                {data.columns.map((column) => (
                     <div key={column.id} className="flex items-center justify-between relative py-1">
                         <div className="px-4">
                             {column.name} ({column.type})
