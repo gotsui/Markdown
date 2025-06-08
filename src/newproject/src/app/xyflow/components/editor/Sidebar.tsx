@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import { ERNode, EREdge, Column, ERNodeType } from "../../types/erd";
 import SaveButton from "./SaveButton";
 import TableSelector from "./TableSelector";
@@ -27,6 +29,12 @@ const Sidebar: React.FC<SidebarProps> = ({
     saveData,
     toggleTableSelection,
 }) => {
+    const [openPanels, setOpenPanels] = useState({
+        tableSelector: false,
+        tableAdder: false,
+        tableEditor: false,
+        relationEditor: false,
+    });
     const selectedNode = nodes.find((node) => node.id === selectedNodeId);
 
     const updateTableName = (name: string) => {
@@ -104,24 +112,96 @@ const Sidebar: React.FC<SidebarProps> = ({
         event.dataTransfer.effectAllowed = "move";
     };
 
+    const togglePanel = (panel: keyof typeof openPanels) => {
+        setOpenPanels((prev) => ({ ...prev, [panel]: !prev[panel] }));
+    };
+
     return (
         <aside className="w-80 p-4 border-r border-gray-200 bg-gray-50 h-full overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">ER図エディタ</h3>
             <SaveButton onSave={saveData} />
-            <TableSelector
-                nodes={nodes}
-                selectedTableIds={selectedTableIds}
-                toggleTableSelection={toggleTableSelection}
-            />
-            <TableAdder onDragStart={handleDragStart} />
-            <TableEditor
-                node={selectedNode || null}
-                updateTableName={updateTableName}
-                addColumn={addColumn}
-                updateColumn={updateColumn}
-                removeColumn={removeColumn}
-            />
-            <RelationEditor nodes={nodes} edges={edges} updateEdgeLabel={updateEdgeLabel} />
+            <div>
+                <button
+                    onClick={() => togglePanel("tableSelector")}
+                    className="
+                        w-full flex justify-between items-center p-2
+                        bg-blue-500 text-white rounded hover:bg-blue-600
+                    "
+                >
+                    <span>テーブル選択</span>
+                    <span>{openPanels.tableSelector ? "▲" : "▼"}</span>
+                </button>
+                {openPanels.tableSelector && (
+                    <div className="p-2 bg-blue-100 rounded">
+                        <TableSelector
+                            nodes={nodes}
+                            selectedTableIds={selectedTableIds}
+                            toggleTableSelection={toggleTableSelection}
+                        />
+                    </div>
+                )}
+            </div>
+            <div>
+                <button
+                    onClick={() => togglePanel("tableAdder")}
+                    className="
+                        w-full flex justify-between items-center p-2
+                        bg-violet-500 text-white rounded hover:bg-violet-600
+                    "
+                >
+                    <span>テーブル追加</span>
+                    <span>{openPanels.tableAdder ? "▲" : "▼"}</span>
+                </button>
+                {openPanels.tableAdder && (
+                    <div className="p-2 bg-violet-100 rounded">
+                        <TableAdder onDragStart={handleDragStart} />
+                    </div>
+                )}
+            </div>
+            <div>
+                <button
+                    onClick={() => togglePanel("tableEditor")}
+                    className="
+                        w-full flex justify-between items-center p-2
+                        bg-yellow-500 text-white rounded hover:bg-yellow-600
+                    "
+                >
+                    <span>テーブル編集</span>
+                    <span>{openPanels.tableEditor ? "▲" : "▼"}</span>
+                </button>
+                {openPanels.tableEditor && (
+                    <div className="p-2 bg-yellow-100 rounded">
+                        {selectedNode ? (
+                            <TableEditor
+                                node={selectedNode || null}
+                                updateTableName={updateTableName}
+                                addColumn={addColumn}
+                                updateColumn={updateColumn}
+                                removeColumn={removeColumn}
+                            />
+                        ) : (
+                            <span>テーブルを選択してください</span>
+                        )}
+                    </div>
+                )}
+            </div>
+            <div>
+                <button
+                    onClick={() => togglePanel("relationEditor")}
+                    className="
+                        w-full flex justify-between items-center p-2
+                        bg-orange-500 text-white rounded hover:bg-orange-600
+                    "
+                >
+                    <span>リレーション編集</span>
+                    <span>{openPanels.relationEditor ? "▲" : "▼"}</span>
+                </button>
+                {openPanels.relationEditor && (
+                    <div className="p-2 bg-orange-100 rounded">
+                        <RelationEditor nodes={nodes} edges={edges} updateEdgeLabel={updateEdgeLabel} />
+                    </div>
+                )}
+            </div>
         </aside>
     );
 };
