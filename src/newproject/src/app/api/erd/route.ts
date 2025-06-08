@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import fs from "fs/promises";
 import path from "path";
-import { ERNode, EREdge } from "../../xyflow/erd";
+import { ERNode, EREdge } from "../../xyflow/types/erd";
 
 const DATA_FILE = path.join(process.cwd(), "erd", "erd.json");
 
