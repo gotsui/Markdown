@@ -21,6 +21,10 @@ const nodeTypes = {
     table: TableNode,
 };
 
+const defaultEdgeOptions = {
+    type: 'smoothstep',
+};
+
 const ErdEditor: React.FC = () => {
     const reactFlowWrapper = useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState<ERNode>([]);
@@ -194,6 +198,7 @@ const ErdEditor: React.FC = () => {
                     onDrop={onDrop}
                     onDragOver={onDragOver}
                     nodeTypes={nodeTypes}
+                    defaultEdgeOptions={defaultEdgeOptions}
                     fitView
                 >
                     <Controls />
