@@ -2,12 +2,12 @@
 
 import { useEffect, useState } from "react";
 
-type SaveButtonProps = {
+type ErdRepositoryProps = {
     onSave: (name: string) => Promise<void>;
     onLoad: (name: string) => Promise<void>;
 };
 
-const SaveButton: React.FC<SaveButtonProps> = ({ onSave, onLoad }) => {
+const ErdRepository: React.FC<ErdRepositoryProps> = ({ onSave, onLoad }) => {
     const [diagramName, setDiagramName] = useState("");
     const [selectedDiagram, setSelectedDiagram] = useState("");
     const [diagrams, setDiagrams] = useState<string[]>([]);
@@ -94,4 +94,4 @@ const SaveButton: React.FC<SaveButtonProps> = ({ onSave, onLoad }) => {
     );
 };
 
-export default SaveButton;
+export default ErdRepository;

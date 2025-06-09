@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { ERNode, EREdge, Column, ERNodeType } from "../../types/erd";
-import SaveButton from "./SaveButton";
+import ErdRepository from "./ErdRepository";
 import TableSelector from "./TableSelector";
 import TableAdder from "./TableAdder";
 import TableEditor from "./TableEditor";
@@ -135,7 +135,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </button>
                 {openPanels.save && (
                     <div className="p-2 bg-pink-100 rounded">
-                        <SaveButton
+                        <ErdRepository
                             onSave={saveData}
                             onLoad={loadData}
                         />

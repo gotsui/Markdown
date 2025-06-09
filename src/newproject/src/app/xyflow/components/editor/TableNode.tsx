@@ -1,5 +1,5 @@
 import { Handle, Position, NodeProps, Node } from "@xyflow/react";
-import React, { useState } from "react";
+import React from "react";
 import { Column } from "../../types/erd";
 
 type TableNode = Node<
