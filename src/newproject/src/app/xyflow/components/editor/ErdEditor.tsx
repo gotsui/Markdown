@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useRef, useEffect, useState, useMemo } from "react";
+import React, { useCallback, useRef, useState, useMemo } from "react";
 import {
     ReactFlow,
     useNodesState,
@@ -21,7 +21,7 @@ const nodeTypes = {
     table: TableNode,
 };
 
-const ERDEditor: React.FC = () => {
+const ErdEditor: React.FC = () => {
     const reactFlowWrapper = useRef<HTMLDivElement>(null);
     const [nodes, setNodes, onNodesChange] = useNodesState<ERNode>([]);
     const [edges, setEdges, onEdgesChange] = useEdgesState<EREdge>([]);
@@ -29,33 +29,13 @@ const ERDEditor: React.FC = () => {
     const [selectedTableIds, setSelectedTableIds] = useState<Set<string>>(new Set());
     const { screenToFlowPosition } = useReactFlow();
 
-    // データの読み込み
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch("/api/erd");
-                const data = await response.json();
-
-                if (data.nodes && data.edges) {
-                    setNodes(data.nodes);
-                    setEdges(data.edges);
-                    setSelectedTableIds(new Set(data.nodes.map((n: ERNode) => n.id)));
-                }
-            } catch (error) {
-                console.error("Error fetching ERD data:", error);
-            }
-        };
-
-        fetchData();
-    }, [setNodes, setEdges]);
-
     // データの保存
-    const saveData = useCallback(async () => {
+    const saveData = useCallback(async (name: string) => {
         try {
-            const response = await fetch("/api/erd", {
+            const response = await fetch("/api/erd/save", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ nodes, edges }),
+                body: JSON.stringify({ name, nodes, edges }),
             });
 
             if (!response.ok) {
@@ -68,6 +48,28 @@ const ERDEditor: React.FC = () => {
             alert("Failed to save data");
         }
     }, [nodes, edges]);
+
+    // データの読み込み
+    const loadData = async (name: string) => {
+        try {
+            const res = await fetch(`/api/erd/load?name=${name}`);
+
+            if (!res.ok) {
+                throw new Error("Failed to fetch data");
+            }
+
+            const data = await res.json();
+
+            if (data.nodes && data.edges) {
+                setNodes(data.nodes);
+                setEdges(data.edges);
+                setSelectedTableIds(new Set(data.nodes.map((n: ERNode) => n.id)));
+            }
+        } catch (error) {
+            console.error("Error fetching ERD data:", error);
+            alert("Failed to fetch data");
+        }
+    };
 
     // 表示フィルタリング
     const filteredNodes = useMemo(() => {
@@ -176,6 +178,7 @@ const ERDEditor: React.FC = () => {
                 selectedNodeId={selectedNodeId}
                 selectedTableIds={selectedTableIds}
                 saveData={saveData}
+                loadData={loadData}
                 toggleTableSelection={toggleTableSelection}
             />
             <div className="flex-1" ref={reactFlowWrapper}>
@@ -201,4 +204,4 @@ const ERDEditor: React.FC = () => {
     );
 };
 
-export default ERDEditor;
+export default ErdEditor;

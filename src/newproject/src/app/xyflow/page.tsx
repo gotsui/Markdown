@@ -1,13 +1,13 @@
 "use client";
 
 import { ReactFlowProvider } from "@xyflow/react";
-import ERDEditor from "./components/editor/ERDEditor";
+import ErdEditor from "./components/editor/ErdEditor";
 import "@xyflow/react/dist/style.css";
 
 const Home = () => {
     return (
         <ReactFlowProvider>
-            <ERDEditor />
+            <ErdEditor />
         </ReactFlowProvider>
     );
 };

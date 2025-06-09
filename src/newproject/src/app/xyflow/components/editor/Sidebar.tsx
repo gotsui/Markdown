@@ -15,7 +15,8 @@ type SidebarProps = {
     selectedTableIds: Set<string>;
     setNodes: (nodes: ERNode[] | ((prev: ERNode[]) => ERNode[])) => void;
     setEdges: (edges: EREdge[] | ((prev: EREdge[]) => EREdge[])) => void;
-    saveData: () => Promise<void>;
+    saveData: (name: string) => Promise<void>;
+    loadData: (name: string) => Promise<void>;
     toggleTableSelection: (tableId: string) => void;
 };
 
@@ -27,9 +28,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     setNodes,
     setEdges,
     saveData,
+    loadData,
     toggleTableSelection,
 }) => {
     const [openPanels, setOpenPanels] = useState({
+        save: false,
         tableSelector: false,
         tableAdder: false,
         tableEditor: false,
@@ -119,7 +122,26 @@ const Sidebar: React.FC<SidebarProps> = ({
     return (
         <aside className="w-80 p-4 border-r border-gray-200 bg-gray-50 h-full overflow-y-auto">
             <h3 className="text-lg font-semibold mb-4">ER図エディタ</h3>
-            <SaveButton onSave={saveData} />
+            <div>
+                <button
+                    onClick={() => togglePanel("save")}
+                    className="
+                        w-full flex justify-between items-center p-2
+                        bg-pink-500 text-white rounded hover:bg-pink-600
+                    "
+                >
+                    <span>保存・読み込み</span>
+                    <span>{openPanels.save ? "▲" : "▼"}</span>
+                </button>
+                {openPanels.save && (
+                    <div className="p-2 bg-pink-100 rounded">
+                        <SaveButton
+                            onSave={saveData}
+                            onLoad={loadData}
+                        />
+                    </div>
+                )}
+            </div>
             <div>
                 <button
                     onClick={() => togglePanel("tableSelector")}
