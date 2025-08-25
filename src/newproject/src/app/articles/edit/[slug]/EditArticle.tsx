@@ -65,7 +65,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
         if (status !== "loading") {
             fetchArticle();
         }
-    }, [params.slug, session, status, router]);
+    }, [params.slug, status, router]);
 
     if (status === "loading" || isLoading) {
         return <div>Loading...</div>;

@@ -11,11 +11,8 @@ type MarkdownEditorProps = {
 };
 
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: MarkdownEditorProps) => {
-    const [markdown, setMarkdown] = useState(value);
-
     const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         const nextValue = e.target.value;
-        setMarkdown(nextValue);
         onChange(nextValue);
     };
 
@@ -31,7 +28,6 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
         const contentLeft = textarea.value.substring(0, cursorPosition);
         const contentRight = textarea.value.substring(cursorPosition);
         const nextValue = contentLeft + "\t" + contentRight;
-        setMarkdown(nextValue);
         onChange(nextValue);
 
         setTimeout(() => {
@@ -44,7 +40,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
             <div>
                 <h2 className="text-lg font-semibold mb-2">編集</h2>
                 <textarea
-                    value={markdown}
+                    value={value}
                     onChange={handleChange}
                     onKeyDown={handleKeyDown}
                     placeholder="Markdownを入力してください"
@@ -56,7 +52,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({ value, onChange }: Mark
                 <h2 className="text-lg font-semibold mb-2">プレビュー</h2>
                 <div className="prose max-w-none border rounded p-2 h-160 overflow-auto">
                     <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
-                        {markdown}
+                        {value}
                     </Markdown>
                 </div>
             </div>
