@@ -6,6 +6,7 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
+import rehypeSanitize from 'rehype-sanitize';
 import rehypeMermaid from "./rehypeMarmaid";
 
 const parse = async (content: string): Promise<string> => {
@@ -14,6 +15,7 @@ const parse = async (content: string): Promise<string> => {
             .use(remarkParse)
             .use(remarkGfm)
             .use(remarkRehype)
+            .use(rehypeSanitize)
             .use(rehypeMermaid)
             .use(rehypePrettyCode)
             .use(rehypeStringify, { closeEmptyElements: true })
