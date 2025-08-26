@@ -1,16 +1,7 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { unified } from "unified";
-import remarkParse from "remark-parse";
-import remarkRehype from "remark-rehype";
-import rehypeStringify from "rehype-stringify";
-import rehypePrettyCode from "rehype-pretty-code";
 import { visit } from "unist-util-visit";
 import { toString } from "hast-util-to-string";
 import mermaid from "mermaid";
 import type { Root as HastRoot, Element, ElementContent } from 'hast';
-import remarkGfm from "remark-gfm";
 import { fromHtml } from 'hast-util-from-html';
 
 mermaid.initialize({
@@ -73,30 +64,4 @@ const rehypeMermaid = () => {
     };
 };
 
-export const useProcessMarkdown = (markdown: string) => {
-    const [processedContent, setProcessedContent] = useState("");
-
-    useEffect(() => {
-        const process = async () => {
-            try {
-                const file = await unified()
-                    .use(remarkParse)
-                    .use(remarkGfm)
-                    .use(remarkRehype)
-                    .use(rehypeMermaid)
-                    .use(rehypePrettyCode)
-                    .use(rehypeStringify, { closeEmptyElements: true })
-                    .process(markdown);
-
-                setProcessedContent(String(file));
-            } catch (error) {
-                console.error("Markdown processing failed: ", error);
-                setProcessedContent(markdown);
-            }
-        };
-
-        process();
-    }, [markdown]);
-
-    return processedContent;
-};
+export default rehypeMermaid;

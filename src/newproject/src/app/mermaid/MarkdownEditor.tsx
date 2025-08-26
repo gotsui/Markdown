@@ -1,10 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
-type EditorProps = {
-    onChange: (code: string) => void;
-};
+import { useContext, useState } from "react";
+import MarkdownContext from "@/components/markdown/MarkdownContent";
 
 const mermaidTemplates = [
     {
@@ -76,15 +73,15 @@ gantt
     },
 ];
 
-export const Editor: React.FC<EditorProps> = ({ onChange }) => {
-    const [code, setCode] = useState<string>("");
-    const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0);
+const MarkdownEditor = () => {
+    const context = useContext(MarkdownContext);
 
-    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        const nextCode = e.target.value;
-        setCode(nextCode);
-        onChange(nextCode);
-    };
+    if (!context) {
+        throw new Error("MarkdownEditor must be used within a MarkdownContext");
+    }
+
+    const { markdown, updateMarkdown } = context;
+    const [selectedTemplateIndex, setSelectedTemplateIndex] = useState(0);
     
     const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (e.key !== "Tab") {
@@ -123,7 +120,7 @@ export const Editor: React.FC<EditorProps> = ({ onChange }) => {
             }
 
             const nextValue = rowValues.join("\n");
-            setCode(nextValue);
+            updateMarkdown(nextValue);
 
             setTimeout(() => {
                 textarea.selectionStart = nextStartPosition;
@@ -162,7 +159,7 @@ export const Editor: React.FC<EditorProps> = ({ onChange }) => {
                 }
             }
 
-            setCode(nextValue);
+            updateMarkdown(nextValue);
 
             setTimeout(() => {
                 textarea.selectionStart = nextStartPosition;
@@ -172,14 +169,13 @@ export const Editor: React.FC<EditorProps> = ({ onChange }) => {
     };
 
     const handleInsertTemplate = () => {
-        if (code) {
+        if (markdown) {
             if(!window.confirm("入力内容が上書きされます。\nよろしいですか。")) {
                 return;
             }
         }
 
-        setCode(mermaidTemplates[selectedTemplateIndex].template);
-        onChange(mermaidTemplates[selectedTemplateIndex].template);
+        updateMarkdown(mermaidTemplates[selectedTemplateIndex].template);
     };
 
     return (
@@ -210,11 +206,13 @@ export const Editor: React.FC<EditorProps> = ({ onChange }) => {
             </div>
             <textarea
                 className="flex-auto w-full p-2 border rounded resize-none font-mono"
-                value={code}
-                onChange={handleChange}
+                value={markdown}
+                onChange={(e) => updateMarkdown(e.target.value)}
                 onKeyDown={handleKeyDown}
                 spellCheck={false}
             />
         </div>
     );
 };
+
+export default MarkdownEditor;

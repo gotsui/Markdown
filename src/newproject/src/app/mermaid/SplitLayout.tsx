@@ -1,25 +1,19 @@
 "use client";
 
-import { useCallback, useState } from "react";
-import { debounceRender } from "./debounce";
-import { Editor } from "./Editor";
-import { Preview } from "./Preview";
+import MarkdownEditor from "./MarkdownEditor";
+import MarkdownView from "./MarkdownView";
 
-export const SplitLayout: React.FC = () => {
-    const [code, setCode] = useState<string>("");
-
-    const handleCodeChange = useCallback((nextCode: string) => {
-        debounceRender(() => setCode(nextCode));
-    }, []);
-
+const SplitLayout = () => {
     return (
-        <div className="flex flex-col md:flex-row h-full">
+        <div className="flex flex-col md:flex-row h-full border-b">
             <div className="w-full md:w-1/2 border-r">
-                <Editor onChange={handleCodeChange} />
+                <MarkdownEditor />
             </div>
             <div className="w-full md:w-1/2">
-                <Preview code={code} />
+                <MarkdownView />
             </div>
         </div>
     );
 };
+
+export default SplitLayout;

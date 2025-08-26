@@ -1,0 +1,28 @@
+"use client";
+
+import { unified } from "unified";
+import remarkParse from "remark-parse";
+import remarkRehype from "remark-rehype";
+import rehypeStringify from "rehype-stringify";
+import rehypePrettyCode from "rehype-pretty-code";
+import remarkGfm from "remark-gfm";
+import rehypeMermaid from "./rehypeMarmaid";
+
+const parse = async (content: string): Promise<string> => {
+    try {
+        const file = await unified()
+            .use(remarkParse)
+            .use(remarkGfm)
+            .use(remarkRehype)
+            .use(rehypeMermaid)
+            .use(rehypePrettyCode)
+            .use(rehypeStringify, { closeEmptyElements: true })
+            .process(content);
+
+        return file.toString();
+    } catch (error) {
+        return content;
+    }
+};
+
+export default parse;
