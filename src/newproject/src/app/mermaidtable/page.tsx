@@ -1,6 +1,9 @@
 "use client";
 
 import React, { useState, ChangeEvent, useRef } from "react";
+import Markdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import remarkGfm from "remark-gfm";
 
 const TabToMarkdownTable: React.FC = () => {
     const [input, setInput] = useState<string>("");
@@ -144,6 +147,14 @@ const TabToMarkdownTable: React.FC = () => {
                             {copyStatus}
                         </p>
                     )}
+                </div>
+                <div>
+                    <h2 className="text-lg font-semibold mb-2">プレビュー</h2>
+                    <div className="prose max-w-none border rounded p-2 h-100 overflow-auto">
+                        <Markdown remarkPlugins={[remarkGfm]} rehypePlugins={[rehypeRaw]}>
+                            {output}
+                        </Markdown>
+                    </div>
                 </div>
             </div>
         </div>
