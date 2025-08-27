@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext } from "react";
-import { MarkdownContextValue } from "./useMarkdown";
+import { MarkdownContextValue } from "@/hooks/useMarkdown";
 
 const MarkdownContext = createContext<MarkdownContextValue | undefined>(undefined);
 

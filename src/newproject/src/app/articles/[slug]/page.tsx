@@ -5,35 +5,16 @@ import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { isAuthorOrAdmin } from "@/lib/auth";
 import EditButton from "@/components/EditButton";
-import Markdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import rehypeRaw from "rehype-raw";
 import { readMarkdown } from "@/lib/markdown";
-import SyntaxHighlighter from "react-syntax-highlighter";
-import { vs2015 } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
-import Mermaid from "@/components/Mermaid";
 import TableOfContents from "@/components/TableOfContents";
-import { toString } from "mdast-util-to-string";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
 import ArticleDownloadButton from "@/components/ArticleDownloadButton";
 import FavoriteButton from "@/components/FavoriteButton";
+import MarkdownView from "@/components/markdown/MarkdownView";
 
 type Props = {
     params: Promise<{ slug: string }>;
-};
-
-const generateUniqueId = (text: string, idCounter: { [key: string]: number }) => {
-    let id = text;
-
-    if (idCounter[id] !== undefined) {
-        idCounter[id]++;
-        id = `${text}-${idCounter[id]}`;
-    } else {
-        idCounter[id] = 0;
-    }
-
-    return id;
 };
 
 const ArticlePage: React.FC<Props> = async ({ params }) => {
@@ -86,8 +67,6 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
         );
     }
 
-    const idCounter: { [key: string]: number } = {};
-
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
@@ -104,73 +83,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                 <FavoriteButton articleId={article.id} isInitialFavorited={article.favorites ? article.favorites.length > 0 : false} />
             </div>
             <TableOfContents markdown={content} />
-            <div className="prose max-w-none">
-                <Markdown
-                    remarkPlugins={[remarkGfm]}
-                    rehypePlugins={[rehypeRaw]}
-                    components={{
-                        pre({children}) {
-                            return children;
-                        },
-                        code({ node, className, children, ref, ...props }) {
-                            if (
-                                className === "language-mermaid" &&
-                                node?.children[0].type === "text"
-                            ) {
-                                return <Mermaid code={node?.children[0].value} />;
-                            } else {
-                                const match = /language-(\w+)/.exec(className || "");
-
-                                return match ? (
-                                    <SyntaxHighlighter
-                                        style={vs2015 as any}
-                                        language={match[1]}
-                                        PreTag="div"
-                                        {...props}
-                                    >
-                                        {String(children).replace(/\n$/, "")}
-                                    </SyntaxHighlighter>
-                                ) : (
-                                    <code className={className}>{children}</code>
-                                );
-                            }
-                        },
-                        h1({ node, children, ...props }) {
-                            const text = toString(node) || '';
-                            const id = generateUniqueId(text, idCounter);
-                            return <h1 id={encodeURIComponent(id)} {...props}>{children}</h1>;
-                        },
-                        h2({ node, children, ...props }) {
-                            const text = toString(node) || '';
-                            const id = generateUniqueId(text, idCounter);
-                            return <h2 id={encodeURIComponent(id)} {...props}>{children}</h2>;
-                        },
-                        h3({ node, children, ...props }) {
-                            const text = toString(node) || '';
-                            const id = generateUniqueId(text, idCounter);
-                            return <h3 id={encodeURIComponent(id)} {...props}>{children}</h3>;
-                        },
-                        // 目次は3階層まで
-                        // h4({ node, children, ...props }) {
-                        //     const text = toString(node) || '';
-                        //     const id = generateUniqueId(text, idCounter);
-                        //     return <h4 id={encodeURIComponent(id)} {...props}>{children}</h4>;
-                        // },
-                        // h5({ node, children, ...props }) {
-                        //     const text = toString(node) || '';
-                        //     const id = generateUniqueId(text, idCounter);
-                        //     return <h5 id={encodeURIComponent(id)} {...props}>{children}</h5>;
-                        // },
-                        // h6({ node, children, ...props }) {
-                        //     const text = toString(node) || '';
-                        //     const id = generateUniqueId(text, idCounter);
-                        //     return <h6 id={encodeURIComponent(id)} {...props}>{children}</h6>;
-                        // },
-                    }}
-                >
-                    {content}
-                </Markdown>
-            </div>
+            <MarkdownView markdown={content} />
         </div>
     );
 };
