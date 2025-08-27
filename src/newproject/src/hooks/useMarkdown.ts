@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { debounce } from "lodash";
-import parse from "./parse";
+import { parse } from "@/lib/markdown/markdownProcessor";
 
 export type MarkdownContextValue = {
     markdown: string;

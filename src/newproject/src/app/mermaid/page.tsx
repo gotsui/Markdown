@@ -1,7 +1,7 @@
 "use client";
 
-import MarkdownContext from "@/components/markdown/MarkdownContent";
-import useMarkdown from "@/components/markdown/useMarkdown";
+import MarkdownContext from "@/content/MarkdownContent";
+import useMarkdown from "@/hooks/useMarkdown";
 import SplitLayout from "./SplitLayout";
 
 const content = `

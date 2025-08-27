@@ -9,7 +9,7 @@ import remarkGfm from "remark-gfm";
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeMermaid from "./rehypeMarmaid";
 
-const parse = async (content: string): Promise<string> => {
+export const parse = async (content: string): Promise<string> => {
     try {
         const file = await unified()
             .use(remarkParse)
@@ -26,5 +26,3 @@ const parse = async (content: string): Promise<string> => {
         return content;
     }
 };
-
-export default parse;

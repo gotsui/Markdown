@@ -1,7 +1,7 @@
 "use client";
 
 import { useContext, useState } from "react";
-import MarkdownContext from "@/components/markdown/MarkdownContent";
+import MarkdownContext from "@/content/MarkdownContent";
 
 const mermaidTemplates = [
     {
