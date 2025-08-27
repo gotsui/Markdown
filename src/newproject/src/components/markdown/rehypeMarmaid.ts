@@ -45,15 +45,11 @@ const rehypeMermaid = () => {
                             (child): child is ElementContent => child.type === 'element' || child.type === 'text',
                         );
 
-                        console.log('Original SVG:', svg);
-                        console.log('SVG Hast:', svgHast);
-                        console.log('Processed Children:', svgChildren);
-
                         node.tagName = "div";
                         node.properties = { className: ["mermaid"] };
                         node.children = svgChildren;
                     } catch (error) {
-                        // console.error("Mermaid rendering failed: ", error);
+                        return;
                     }
                 })(),
             );
