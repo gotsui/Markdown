@@ -4,12 +4,3 @@
 .prose {
   max-width: none;
 }
-
-/* 折りたたみアイコンの回転 */
-details[open] .transform {
-  transform: rotate(180deg);
-}
-
-textarea {
-  overflow-anchor: none;
-}

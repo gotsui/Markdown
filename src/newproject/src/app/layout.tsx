@@ -17,10 +17,8 @@ export default async function RootLayout({
         <html lang="ja">
             <body>
                 <NextAuthProvider>
-                    <div className="flex flex-col h-screen">
-                        <NavBar />
-                        <main className="flex-1 basis-0 flex flex-col overflow-auto">{children}</main>
-                    </div>
+                    <NavBar />
+                    <main>{children}</main>
                 </NextAuthProvider>
             </body>
         </html>

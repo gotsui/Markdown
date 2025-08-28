@@ -2,34 +2,26 @@ import Link from "next/link";
 import React from "react";
 
 type ArticleCardProps = {
-    article: Article;
+    article: {
+        id: string;
+        title: string;
+        slug: string;
+        description?: string;
+        visibility: "PUBLIC" | "PRIVATE" | "DRAFT";
+        createdAt: string;
+    };
 };
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
     return (
-        <Link
-            href={`/articles/${article.slug}`}
-            className="p-4 border rounded-lg shadow-md hover:bg-gray-100 overflow-hidden"
-        >
-            <div>
-                <h2 className="text-xl font-semibold truncate" title={article.title}>
-                    {article.title}
-                </h2>
-                <p className="text-sm text-gray-700 mt-1">
-                    作成者：{article.author.name || "匿名"}
-                </p>
-                <p className="text-sm text-gray-500">
-                    作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}
-                </p>
-                <p className="text-sm text-gray-700">
-                    お気に入り数：
-                    <span className={`mx-1 ${article.isFavorited ? "text-red-500" : "text-gray-500"}`}>
-                        {article.isFavorited ? "♥" : "♡"}
-                    </span>
-                    {article._count?.favorites || 0}
-                </p>
-            </div>
-        </Link>
+        <div className="border p-4 rounded-lg shadow-md">
+            <h2 className="text-xl font-bold">
+                <Link href={`/articles/${article.slug}`}>{article.title}</Link>
+            </h2>
+            {article.description && <p className="text-gray-600">{article.description}</p>}
+            <p className="text-sm text-gray-500">Created: {new Date(article.createdAt).toLocaleDateString()}</p>
+            <p className="text-sm text-gray-500">Visibility: {article.visibility}</p>
+        </div>
     );
 };
 
