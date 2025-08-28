@@ -13,7 +13,7 @@ const MarkdownPreview = () => {
     const { parsed } = context;
 
     return (
-        <div className="prose max-w-none border rounded p-2 h-full overflow-auto">
+        <div className="prose">
             <div className="mermaid" dangerouslySetInnerHTML={{ __html: parsed }} />
         </div>
     );

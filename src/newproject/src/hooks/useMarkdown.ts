@@ -7,26 +7,35 @@ import { parse } from "@/lib/markdown/markdownProcessor";
 export type MarkdownContextValue = {
     markdown: string;
     parsed: string;
-    updateMarkdown: (markdown: string) => void;
+    updateMarkdown: (markdown: string, needDebounce?: boolean) => void;
 };
 
 const useMarkdown = (defalutMarkdown = ""): MarkdownContextValue => {
     const [markdown, setMarkdown] = useState(defalutMarkdown);
     const [parsed, setParsed] = useState<string>("");
 
-    const debouncedParse = useCallback(debounce(async (value) => {
+    const parseMarkdown = useCallback(async (value: string) => {
         setParsed(await parse(value));
+    }, []);
+
+    const debouncedParse = useCallback(debounce(async (value) => {
+        parseMarkdown(value);
     }, 500), []);
 
-    const updateMarkdown = (nextMarkdown: string) => {
+    const updateMarkdown = (nextMarkdown: string, needDebounce=true) => {
         setMarkdown(nextMarkdown);
-        debouncedParse(nextMarkdown);
+
+        if (needDebounce){
+            debouncedParse(nextMarkdown);
+        } else {
+            parseMarkdown(nextMarkdown);
+        }
     };
 
     useEffect(() => {
-        debouncedParse(defalutMarkdown);
+        parseMarkdown(defalutMarkdown);
         return () => debouncedParse.cancel();
-    }, [defalutMarkdown, debouncedParse]);
+    }, [defalutMarkdown, parseMarkdown, debouncedParse]);
 
     return { markdown, parsed, updateMarkdown };
 };

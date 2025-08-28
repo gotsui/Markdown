@@ -97,8 +97,8 @@ const SplitLayout = () => {
 
     return (
         <div className="flex flex-col md:flex-row h-full">
-            <div className="w-full md:w-1/2 p-4">
-                <div className="flex flex-col h-full">
+            <div className="flex flex-col h-full w-full md:w-1/2 p-4">
+                <div>
                     <h2 className="text-lg font-bold mb-2">Mermaidエディタ</h2>
                     <label htmlFor="mermaid-template" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                         テンプレート
@@ -123,12 +123,16 @@ const SplitLayout = () => {
                             挿入
                         </button>
                     </div>
+                </div>
+                <div className="flex-1 flex flex-col">
                     <MarkdownEditor />
                 </div>
             </div>
-            <div className="w-full md:w-1/2 p-4">
+            <div className="flex flex-col h-full w-full md:w-1/2 p-4">
                 <h2 className="text-lg font-semibold mb-2">プレビュー</h2>
-                <MarkdownPreview />
+                <div className="max-w-none border rounded p-2 h-full overflow-auto">
+                    <MarkdownPreview />
+                </div>
             </div>
         </div>
     );

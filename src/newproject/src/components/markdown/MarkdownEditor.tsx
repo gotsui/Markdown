@@ -99,7 +99,7 @@ const MarkdownEditor = () => {
 
     return (
         <textarea
-            className="flex-auto w-full p-2 border rounded resize-none font-mono"
+            className="flex-auto w-full p-2 border rounded resize-y font-mono"
             value={markdown}
             onChange={(e) => updateMarkdown(e.target.value)}
             onKeyDown={handleKeyDown}

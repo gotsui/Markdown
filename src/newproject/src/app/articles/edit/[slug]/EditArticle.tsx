@@ -1,22 +1,27 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import MarkdownEditor from "@/components/MarkdownEditor";
+import MarkdownEditor from "@/components/markdown/MarkdownEditor";
+import MarkdownPreview from "@/components/markdown/MarkdownPreview";
 import { useSession } from "next-auth/react";
 import { redirect, useRouter } from "next/navigation";
 import { isAuthorOrAdmin } from "@/lib/auth";
+import useMarkdown from "@/hooks/useMarkdown";
+import MarkdownContext from "@/content/MarkdownContent";
 
 type Props = {
     params: { slug: string };
 };
 
 const EditArticle: React.FC<Props> = ({ params }) => {
+    const markdownContent = useMarkdown();
+    const { markdown, updateMarkdown } = markdownContent;
+
     const { data: session, status } = useSession();
     const router = useRouter();
     const [title, setTitle] = useState("");
     const [slug, setSlug] = useState(params.slug);
     const [description, setDescription] = useState("");
-    const [content, setContent] = useState("");
     const [visibility, setVisibility] = useState<Visibility>("PUBLIC");
     const [isLoading, setIsLoading] = useState(true);
     const [stayOnPage, setStayOnPage] = useState(false);
@@ -53,7 +58,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                 }
 
                 const { content: markdownContent } = await markdownRes.json();
-                setContent(markdownContent);
+                updateMarkdown(markdownContent, false);
             } catch (error) {
                 console.error("Error fetching article:", error);
                 router.push("/articles");
@@ -105,7 +110,7 @@ const EditArticle: React.FC<Props> = ({ params }) => {
             const markdownRes = await fetch("/api/articles/markdown", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ slug, content }),
+                body: JSON.stringify({ slug, content: markdown }),
             });
 
             if (!markdownRes.ok) {
@@ -131,8 +136,8 @@ const EditArticle: React.FC<Props> = ({ params }) => {
     };
 
     return (
-        <div className="container mx-auto p-4">
-            <details className="border rounded-lg p-4 mb-2">
+        <div className="flex flex-col h-full w-full p-4">
+            <details className="border rounded-lg px-4 py-2 mb-2">
                 <summary className="cursor-pointer font-semibold text-lg flex items-center">
                     <span className="mr-2">メタデータ</span>
                     <svg
@@ -177,30 +182,46 @@ const EditArticle: React.FC<Props> = ({ params }) => {
                     </select>
                 </div>
             </details>
-            <MarkdownEditor value={content} onChange={setContent} />
-            <div className="flex items-center">
+            <MarkdownContext value={markdownContent}>
+                <div className="flex-1 flex flex-col md:flex-row space-x-4 py-2">
+                    <div className="flex flex-col h-full w-full md:w-1/2">
+                        <h2 className="text-lg font-bold mb-2">編集</h2>
+                        <div className="flex-1 flex flex-col">
+                            <MarkdownEditor />
+                        </div>
+                    </div>
+                    <div className="flex flex-col h-full w-full md:w-1/2">
+                        <h2 className="text-lg font-bold mb-2">プレビュー</h2>
+                        <div className="flex-1 basis-0 flex flex-col max-w-none border rounded p-2 overflow-auto">
+                            <MarkdownPreview />
+                        </div>
+                    </div>
+                </div>
+            </MarkdownContext>
+            <div className="flex items-center space-x-2 mt-4">
                 <input
                     type="checkbox"
                     checked={stayOnPage}
                     onChange={(e) => setStayOnPage(e.target.checked)}
-                    className="mr-2"
                     id="stayOnPage"
                 />
                 <label htmlFor="stayOnPage" className="text-sm">保存後このページに留まる</label>
             </div>
-            {error && <p className="text-red-500">{error}</p>}
-            {successMessage && <p className="text-green-500">{successMessage}</p>}
-            <button
-                onClick={handleSubmit}
-                className="
-                    mt-4 px-4 py-2 bg-blue-500
-                    text-white rounded
-                    hover:bg-blue-600 disabled:bg-gray-400
-                "
-                disabled={isSaving}
-            >
-                {isSaving ? "保存中..." : "保存"}
-            </button>
+            <div className="flex items-center space-x-4 mt-4">
+                <button
+                    onClick={handleSubmit}
+                    className="
+                        px-4 py-2 bg-blue-500
+                        text-white rounded
+                        hover:bg-blue-600 disabled:bg-gray-400
+                    "
+                    disabled={isSaving}
+                >
+                    {isSaving ? "保存中..." : "保存"}
+                </button>
+                {error && <p className="text-red-500">{error}</p>}
+                {successMessage && <p className="text-green-500">{successMessage}</p>}
+            </div>
         </div>
     );
 };

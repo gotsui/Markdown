@@ -26,7 +26,9 @@ const EditArticlePage: React.FC<Props> = async ({ params }) => {
     const { slug } = await params;
 
     return (
-        <EditArticle params={{ slug }} />
+        <div className="h-[calc(100vh-132px)]">
+            <EditArticle params={{ slug }} />
+        </div>
     );
 };
 
