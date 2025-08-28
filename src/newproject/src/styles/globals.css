@@ -13,3 +13,11 @@ details[open] .transform {
 textarea {
   overflow-anchor: none;
 }
+
+.prose .task-list-item {
+  list-style-type: none;
+}
+
+.prose .task-list-item input[type="checkbox"] {
+  margin: 0.5em 0 -1 -1.5em;
+}

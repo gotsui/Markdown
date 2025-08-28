@@ -13,9 +13,7 @@ const MarkdownPreview = () => {
     const { parsed } = context;
 
     return (
-        <div className="prose">
-            <div className="mermaid" dangerouslySetInnerHTML={{ __html: parsed }} />
-        </div>
+        <div className="prose" dangerouslySetInnerHTML={{ __html: parsed }} />
     );
 };
 
