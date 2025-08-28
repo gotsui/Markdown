@@ -7,7 +7,7 @@ const AuthButton: React.FC = () => {
     const { data: session, status } = useSession();
 
     if (status === "loading") {
-        return <div>Loading...</div>;
+        return <div className="px-4 py-2 text-white">Loading...</div>;
     }
 
     if (session && session.user) {
