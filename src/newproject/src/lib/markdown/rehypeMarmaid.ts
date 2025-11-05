@@ -3,11 +3,19 @@ import { toString } from "hast-util-to-string";
 import mermaid from "mermaid";
 import type { Root as HastRoot, Element, ElementContent } from 'hast';
 import { fromHtml } from 'hast-util-from-html';
+import { icons } from '@iconify-json/logos';
 
 mermaid.initialize({
     startOnLoad: false,
     // theme: "dark",
 });
+
+mermaid.registerIconPacks([
+  {
+    name: icons.prefix,
+    icons,
+  },
+]);
 
 const rehypeMermaid = () => {
     return async (tree: HastRoot) => {
