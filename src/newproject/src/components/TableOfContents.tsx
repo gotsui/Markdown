@@ -35,12 +35,6 @@ const TableOfContents = ({
                         <a
                             href={`#${item.id}`}
                             className="text-blue-600 hover:underline"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                document
-                                    .getElementById(item.id)
-                                    ?.scrollIntoView({ behavior: "smooth" });
-                            }}
                         >
                             {item.text}
                         </a>

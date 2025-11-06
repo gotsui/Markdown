@@ -6,9 +6,10 @@ import remarkRehype from "remark-rehype";
 import rehypeStringify from "rehype-stringify";
 import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
-import rehypeSanitize from 'rehype-sanitize';
+import rehypeSanitize from "rehype-sanitize";
 import rehypeMermaid from "./rehypeMarmaid";
-import rehypeSlug from 'rehype-slug';
+import rehypeSlug from "rehype-slug";
+import rehypeAutolinkHeadings from "rehype-autolink-headings";
 
 export const parse = async (content: string): Promise<string> => {
     try {
@@ -18,6 +19,7 @@ export const parse = async (content: string): Promise<string> => {
             .use(remarkRehype)
             .use(rehypeSlug)
             .use(rehypeSanitize)
+            .use(rehypeAutolinkHeadings, { behavior: 'wrap', properties: { className: "no-underline" } })
             .use(rehypeMermaid)
             .use(rehypePrettyCode)
             .use(rehypeStringify, { closeEmptyElements: true })

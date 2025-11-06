@@ -32,6 +32,19 @@ const MarkdownView = ({
                 depth: parseInt(elm.tagName.charAt(1)),
             }))
         );
+
+        const hash = window.location.hash.slice(1);
+        if (!hash) return;
+
+        const timer = setTimeout(() => {
+            const elm = document.getElementById(hash);
+
+            if (elm) {
+                elm.scrollIntoView({ behavior: "smooth" });
+            }
+        }, 0);
+
+        return () => clearTimeout(timer);
     }, [parsed, setTocItems]);
 
     return (
