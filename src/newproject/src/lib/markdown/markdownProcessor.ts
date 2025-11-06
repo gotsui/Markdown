@@ -8,6 +8,7 @@ import rehypePrettyCode from "rehype-pretty-code";
 import remarkGfm from "remark-gfm";
 import rehypeSanitize from 'rehype-sanitize';
 import rehypeMermaid from "./rehypeMarmaid";
+import rehypeSlug from 'rehype-slug';
 
 export const parse = async (content: string): Promise<string> => {
     try {
@@ -15,6 +16,7 @@ export const parse = async (content: string): Promise<string> => {
             .use(remarkParse)
             .use(remarkGfm)
             .use(remarkRehype)
+            .use(rehypeSlug)
             .use(rehypeSanitize)
             .use(rehypeMermaid)
             .use(rehypePrettyCode)

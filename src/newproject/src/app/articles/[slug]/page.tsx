@@ -6,12 +6,11 @@ import { Prisma } from "@prisma/client";
 import { isAuthorOrAdmin } from "@/lib/auth";
 import EditButton from "@/components/EditButton";
 import { readMarkdown } from "@/lib/markdown";
-import TableOfContents from "@/components/TableOfContents";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
 import ArticleDownloadButton from "@/components/ArticleDownloadButton";
 import FavoriteButton from "@/components/FavoriteButton";
-import MarkdownView from "@/components/markdown/MarkdownView";
+import ArticleLayout from "./ArticleLayout";
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -82,8 +81,7 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
                 <ArticleDownloadButton slug={slug} />
                 <FavoriteButton articleId={article.id} isInitialFavorited={article.favorites ? article.favorites.length > 0 : false} />
             </div>
-            <TableOfContents markdown={content} />
-            <MarkdownView markdown={content} />
+            <ArticleLayout markdown={content} />
         </div>
     );
 };
