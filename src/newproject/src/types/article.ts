@@ -1,6 +1,7 @@
 type Visibility = "PUBLIC" | "PRIVATE" | "DRAFT";
 type SortBy = "createdAt" | "updatedAt" | "title";
 type SortOrder = "asc" | "desc";
+type Role = "USER" | "ADMIN";
 
 type Article = {
     id: string;

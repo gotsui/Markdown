@@ -67,22 +67,14 @@ const ArticlePage: React.FC<Props> = async ({ params }) => {
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
-            <p className="text-gray-600 mb-4">{article.description || "説明なし"}</p>
-            <div className="text-sm text-gray-600 mb-4">
-                <p>作成者：{article.author.name || "匿名"}</p>
-                <p>作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}</p>
-                <p>お気に入り数：{article._count?.favorites || 0}</p>
-                <p>公開状態：{article.visibility}</p>
-            </div>
-            <div className="flex space-x-4 mb-4">
-                <EditButton slug={slug} authorId={article.authorId} session={session} />
-                <ArticleDownloadButton slug={slug} />
-                <FavoriteButton articleId={article.id} isInitialFavorited={article.favorites ? article.favorites.length > 0 : false} />
-            </div>
-            <ArticleLayout markdown={content} />
-        </div>
+        <ArticleLayout
+            article={article}
+            author={article.author}
+            favorites={article.favorites}
+            count={article._count}
+            markdown={content}
+            session={session}
+        />
     );
 };
 
