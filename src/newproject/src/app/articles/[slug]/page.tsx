@@ -4,12 +4,9 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 import { Prisma } from "@prisma/client";
 import { isAuthorOrAdmin } from "@/lib/auth";
-import EditButton from "@/components/EditButton";
 import { readMarkdown } from "@/lib/markdown";
 import { headers } from "next/headers";
 import logger from "@/lib/logger";
-import ArticleDownloadButton from "@/components/ArticleDownloadButton";
-import FavoriteButton from "@/components/FavoriteButton";
 import ArticleLayout from "./ArticleLayout";
 
 type Props = {

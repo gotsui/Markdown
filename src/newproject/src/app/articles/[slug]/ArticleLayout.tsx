@@ -1,12 +1,12 @@
 "use client";
 
+import { useState } from "react";
+
 import ArticleDownloadButton from "@/components/ArticleDownloadButton";
 import EditButton from "@/components/EditButton";
 import FavoriteButton from "@/components/FavoriteButton";
 import MarkdownView from "@/components/markdown/MarkdownView";
 import TableOfContents, { TocItem } from "@/components/TableOfContents";
-import { useState } from "react";
-import { inherits } from "util";
 
 type Favorite = {
     articleId: string;
@@ -66,12 +66,12 @@ const ArticleLayout = ({
                 <ArticleDownloadButton slug={article.slug} />
                 <FavoriteButton articleId={article.id} isInitialFavorited={favorites ? favorites.length > 0 : false} />
             </div>
-            <div className="col-span-4 max-w-220 w-full py-4">
+            <div className="col-span-4 max-w-200 w-full py-4">
                 <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
                 <p className="text-gray-600 mb-4">{article.description || "説明なし"}</p>
-                <div className="text-sm text-gray-600 mb-4">
+                <div className="text-sm text-gray-600 mb-8">
                     <p>作成者：{author.name || "匿名"}</p>
-                    <p>作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}</p>
+                    <p>作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}</p>
                     <p>お気に入り数：{count?.favorites || 0}</p>
                     <p>公開状態：{article.visibility}</p>
                 </div>
