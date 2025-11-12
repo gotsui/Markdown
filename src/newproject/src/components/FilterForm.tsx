@@ -88,7 +88,7 @@ const FilterForm: React.FC<Props> = ({ isSignedIn, currentFilters }) => {
     };
 
     return (
-        <div className="mb-6 p-4 rounded-lg">
+        <div className="p-4 rounded-lg">
             <details className="border bg-gray-100 rounded-lg p-4 mb-2">
                 <summary className="cursor-pointer font-semibold text-lg flex items-center">
                     <span className="mr-2">フィルター</span>

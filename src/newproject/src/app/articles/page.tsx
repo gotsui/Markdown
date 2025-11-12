@@ -1,12 +1,12 @@
-import prisma from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]/route";
-import ArticleCard from "@/components/ArticleCard";
 import React from "react";
-import { Prisma } from "@prisma/client";
 import { headers } from "next/headers";
+import { getServerSession } from "next-auth";
+import { Prisma } from "@prisma/client";
+
 import logger from "@/lib/logger";
-import FilterForm from "@/components/FilterForm";
+import prisma from "@/lib/prisma";
+import ArticlesLayout from "./ArticlesLayout";
+import { authOptions } from "../api/auth/[...nextauth]/route";
 
 const getFiltersFromSearchParams = async (searchParams: { [key: string]: string | undefined }): Promise<ArticleFilter> => {
     const params = await searchParams;
@@ -108,19 +108,11 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
     }));
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-4">ドキュメント一覧</h1>
-            <FilterForm isSignedIn={userId !== null} currentFilters={filters} />
-            {articlesWithFavoriteStatus.length === 0 ? (
-                <p>ドキュメントがありません。</p>
-            ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    {articlesWithFavoriteStatus.map((article: any) => (
-                        <ArticleCard key={article.id} article={article} />
-                    ))}
-                </div>
-            )}
-        </div>
+        <ArticlesLayout
+            userId={userId}
+            filters={filters}
+            articlesWithFavoriteStatus={articlesWithFavoriteStatus}
+        />
     );
 };
 

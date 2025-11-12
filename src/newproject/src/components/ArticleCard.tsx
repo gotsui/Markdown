@@ -1,5 +1,5 @@
-import Link from "next/link";
 import React from "react";
+import Link from "next/link";
 
 type ArticleCardProps = {
     article: Article;
@@ -19,7 +19,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
                     作成者：{article.author.name || "匿名"}
                 </p>
                 <p className="text-sm text-gray-500">
-                    作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP")}
+                    作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}
                 </p>
                 <p className="text-sm text-gray-700">
                     お気に入り数：
