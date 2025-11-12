@@ -21,7 +21,7 @@ const MarkdownView = ({
     }, [markdown]);
 
     useEffect(() => {
-        if (!ref.current || !setTocItems) return;
+        if (!parsed || !ref.current || !setTocItems) return;
 
         setTocItems(
             Array.from(
