@@ -49,10 +49,10 @@ const ArticleDownloadButton: React.FC<Props> = ({ slug }) => {
     };
 
     return (
-        <div>
+        <div className="w-full">
             <button
                 onClick={handleDownload}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 disabled:bg-gray-400"
+                className="bg-green-500 text-white text-sm text-center p-2 w-full rounded hover:bg-green-600 disabled:bg-gray-400"
                 disabled={isLoading}
             >
                 {isLoading ? "ダウンロード中..." : "ダウンロード"}

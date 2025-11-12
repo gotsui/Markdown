@@ -61,12 +61,12 @@ const ArticleLayout = ({
 
     return (
         <div className="flex gap-12 justify-center">
-            <div className="flex flex-col items-center space-y-4 h-fit sticky z-10 top-10">
+            <div className="flex flex-col items-center space-y-4 h-fit sticky z-10 top-10 w-25">
                 <EditButton slug={article.slug} authorId={article.authorId} session={session} />
                 <ArticleDownloadButton slug={article.slug} />
                 <FavoriteButton articleId={article.id} isInitialFavorited={favorites ? favorites.length > 0 : false} />
             </div>
-            <div className="col-span-4 max-w-200 w-full py-4">
+            <div className="max-w-200 w-full py-4">
                 <h1 className="text-3xl font-bold mb-4">{article.title}</h1>
                 <p className="text-gray-600 mb-4">{article.description || "説明なし"}</p>
                 <div className="text-sm text-gray-600 mb-8">
@@ -77,7 +77,7 @@ const ArticleLayout = ({
                 </div>
                 <MarkdownView markdown={markdown} setTocItems={setTocItems} />
             </div>
-            <div className="h-fit sticky z-10 top-10 w-75">
+            <div className="h-fit sticky z-10 top-7 max-h-[80vh] w-75 overflow-auto">
                 <TableOfContents tocItems={tocItems} />
             </div>
         </div>

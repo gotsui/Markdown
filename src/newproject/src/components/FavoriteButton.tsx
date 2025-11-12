@@ -53,9 +53,11 @@ const FavoriteButton: React.FC<Props> = ({ articleId, isInitialFavorited }) => {
         <button
             onClick={toggleFavorite}
             disabled={status !== "authenticated" || isLoading}
-            className={`mt-2 flex items-center gap-1 ${
-                isFavorited ? "text-red-500" : "text-gray-500"
-            } hover:text-red-600 disabled:text-gray-300 disabled:cursor-not-allowed`}
+            className={[
+                "w-full text-sm text-center",
+                `${isFavorited ? "text-red-500" : "text-gray-500"}`,
+                "hover:text-red-600 disabled:text-gray-300 disabled:cursor-not-allowed",
+            ].join(" ")}
         >
             {isFavorited ? "♥" : "♡"} お気に入り
         </button>

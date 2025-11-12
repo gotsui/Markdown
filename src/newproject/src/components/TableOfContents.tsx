@@ -24,7 +24,7 @@ const TableOfContents = ({
     tocItems,
 }: TableOfContentsProps) => {
     return (
-        <nav className="toc mb-6 p-4 bg-gray-100 rounded-lg">
+        <nav className="mb-6 p-4 bg-gray-100 rounded-lg">
             <h2 className="text-lg font-semibold mb-2">目次</h2>
             <ul className="list-none">
                 {tocItems.map((item) => (

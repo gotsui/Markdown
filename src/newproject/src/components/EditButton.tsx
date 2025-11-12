@@ -17,7 +17,7 @@ const EditButton: React.FC<EditButtonProps> = ({ slug, authorId, session }) => {
     return (
         <Link
             href={`/articles/edit/${slug}`}
-            className="inline-block px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+            className="inline-block p-2 w-full text-sm text-center bg-blue-500 text-white rounded hover:bg-blue-600"
         >
             編集
         </Link>
