@@ -33,11 +33,12 @@ const MarkdownView = ({
             }))
         );
 
+        // レンダリング後にURLのハッシュパラメータの位置にスクロールする
         const hash = window.location.hash.slice(1);
         if (!hash) return;
 
         const timer = setTimeout(() => {
-            const elm = document.getElementById(hash);
+            const elm = document.getElementById(decodeURI(hash));
 
             if (elm) {
                 elm.scrollIntoView({ behavior: "smooth" });
