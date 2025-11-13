@@ -26,11 +26,11 @@ const ArticlesLayout = ({
                 <p>ドキュメントがありません。</p>
             ) : (
                 <div className="space-y-4">
-                    <div className="inline-flex rounded-lg outline outline-gray-800">
+                    <div className="inline-flex rounded-lg outline outline-gray-800 overflow-hidden">
                         <button
                             className={[
-                                "p-1 cursor-pointer overflow-hidden",
-                                `${isGrid ? "bg-gray-100" : "bg-gray-400 hover:bg-gray-300"}`,
+                                "p-1 cursor-pointer",
+                                `${isGrid ? "bg-violet-500" : "bg-gray-200 hover:bg-gray-300"}`,
                             ].join(" ")}
                             onClick={() => setIsGrid(true)}
                         >
@@ -40,8 +40,8 @@ const ArticlesLayout = ({
                         </button>
                         <button
                             className={[
-                                "p-1 cursor-pointer overflow-hidden",
-                                `${isGrid ? "bg-gray-400 hover:bg-gray-300" : "bg-gray-100"}`,
+                                "p-1 cursor-pointer",
+                                `${isGrid ? "bg-gray-200 hover:bg-gray-300" : "bg-violet-500"}`,
                             ].join(" ")}
                             onClick={() => setIsGrid(false)}
                         >
