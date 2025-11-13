@@ -71,7 +71,7 @@ const ArticleLayout = ({
                 <p className="text-gray-600 mb-4">{article.description || "説明なし"}</p>
                 <div className="text-sm text-gray-600 mb-8">
                     <p>作成者：{author.name || "匿名"}</p>
-                    <p>作成日：{new Date(article.createdAt).toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}</p>
+                    <p>作成日：{article.createdAt.toLocaleDateString("ja-JP", { timeZone: "Asia/Tokyo" })}</p>
                     <p>お気に入り数：{count?.favorites || 0}</p>
                     <p>公開状態：{article.visibility}</p>
                 </div>

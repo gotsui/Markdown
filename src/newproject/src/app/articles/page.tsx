@@ -111,7 +111,7 @@ const ArticlesPage = async ({ searchParams }: { searchParams: { [key: string]: s
         <ArticlesLayout
             userId={userId}
             filters={filters}
-            articlesWithFavoriteStatus={articlesWithFavoriteStatus}
+            articles={articlesWithFavoriteStatus}
         />
     );
 };

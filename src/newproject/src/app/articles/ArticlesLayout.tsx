@@ -8,43 +8,13 @@ import FilterForm from "@/components/FilterForm";
 type ArticlesLayoutProps = {
     userId: string;
     filters: ArticleFilter;
-    articlesWithFavoriteStatus: {
-        isFavorited: boolean;
-        author: {
-            id: string;
-            image: string | null;
-            email: string;
-            createdAt: Date;
-            updatedAt: Date;
-            name: string | null;
-            emailVerified: Date | null;
-            role: Role;
-        };
-        favorites: {
-            userId: string;
-            id: string;
-            createdAt: Date;
-            articleId: string;
-        }[];
-        _count: {
-            author: number;
-            favorites: number;
-        };
-        id: string;
-        title: string;
-        createdAt: Date;
-        updatedAt: Date;
-        description: string | null;
-        slug: string;
-        visibility: Visibility;
-        authorId: string;
-    }[];
+    articles: Article[];
 };
 
 const ArticlesLayout = ({
     userId,
     filters,
-    articlesWithFavoriteStatus,
+    articles,
 }: ArticlesLayoutProps) => {
     const [isGrid, setIsGrid] = useState(true);
 
@@ -52,7 +22,7 @@ const ArticlesLayout = ({
         <div className="container mx-auto p-4">
             <h1 className="text-2xl font-bold mb-4">ドキュメント一覧</h1>
             <FilterForm isSignedIn={userId !== null} currentFilters={filters} />
-            {articlesWithFavoriteStatus.length === 0 ? (
+            {articles.length === 0 ? (
                 <p>ドキュメントがありません。</p>
             ) : (
                 <div className="space-y-4">
@@ -86,7 +56,7 @@ const ArticlesLayout = ({
                             `${isGrid && "md:grid-cols-3"}`,
                         ].join(" ")}
                     >
-                        {articlesWithFavoriteStatus.map((article: any) => (
+                        {articles.map((article) => (
                             <ArticleCard key={article.id} article={article} />
                         ))}
                     </div>

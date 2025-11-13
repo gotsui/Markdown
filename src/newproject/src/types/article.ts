@@ -7,12 +7,12 @@ type Article = {
     id: string;
     title: string;
     slug: string;
-    description?: string;
+    description?: string | null;
     visibility: Visibility;
     authorId: string;
     author: User;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
     _count?: { favorites: number };
     isFavorited?: boolean;
 };

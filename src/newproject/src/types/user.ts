@@ -2,11 +2,11 @@ type UserRole = "USER" | "ADMIN";
 
 type User = {
     id: string;
-    name?: string;
+    name?: string | null;
     email: string;
-    emailVerified?: string;
-    image?: string;
+    emailVerified?: Date | null;
+    image?: string | null;
     role: UserRole;
-    createdAt: string;
-    updatedAt: string;
+    createdAt: Date;
+    updatedAt: Date;
 };
