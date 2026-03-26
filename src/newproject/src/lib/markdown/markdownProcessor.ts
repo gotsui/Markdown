@@ -22,7 +22,7 @@ export const parse = async (content: string): Promise<string> => {
             .use(rehypeSanitize)
             .use(rehypeAutolinkHeadings, { behavior: "wrap", properties: { className: "no-underline" } })
             .use(rehypeMermaid)
-            .use(rehypePrettyCode, { theme: "github-dark" })
+            .use(rehypePrettyCode, { theme: "dark-plus" })
             .use(rehypeCodeCopyButton)
             .use(rehypeStringify, { closeEmptyElements: true })
             .process(content);
