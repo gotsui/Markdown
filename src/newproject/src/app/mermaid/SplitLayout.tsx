@@ -91,6 +91,29 @@ architecture-beta
 \`\`\`
 `,
     },
+    {
+        type: "mermaid-git-graph",
+        label: "Gitブランチ図",
+        template: `\`\`\`mermaid
+---
+title: タイトル
+---
+%%{init: {'gitGraph': {'showBranches': false, 'showCommitLabel': false}} }%%
+gitGraph
+   commit id: 'First commit'
+   commit id: 'A commit'
+   branch 'feature'
+   switch 'main'
+   commit id: 'Hoge commit'
+   switch 'feature'
+   commit id: 'B commit'
+   cherry-pick id: 'Hoge commit'
+   switch 'main'
+   commit id: 'C commit'
+   merge 'feature'
+\`\`\`
+`,
+    },
 ];
 
 const SplitLayout = () => {
