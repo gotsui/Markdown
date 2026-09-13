@@ -36,6 +36,12 @@ const HomePage = () => {
                 >
                     ER図エディタ
                 </Link>
+                <Link
+                    href="/base64"
+                    className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                >
+                    SVG-Base64変換
+                </Link>
             </div>
         </div>
     );
